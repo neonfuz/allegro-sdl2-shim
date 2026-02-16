@@ -4,6 +4,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <allegro5/allegro_display.h>
+#include <allegro5/allegro_keyboard.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_bitmap.h>
 #include <allegro5/allegro_draw.h>
@@ -39,6 +40,10 @@ static float _clip_y = 0;
 static float _clip_w = 0;
 static float _clip_h = 0;
 static bool _clipping_initialized = false;
+
+static bool _keyboard_installed = false;
+static Uint8 _key[512] = {0};
+static unsigned int _key_down_bits[(ALLEGRO_KEY_MAX + 31) / 32] = {0};
 
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
 {
@@ -1146,4 +1151,96 @@ void al_draw_polyline(const float* vertices, int vertex_count, int stride, ALLEG
 void al_draw_pixel(float x, float y, ALLEGRO_COLOR color)
 {
     al_put_pixel(x, y, color);
+}
+
+bool al_install_keyboard(void)
+{
+    if (_keyboard_installed) {
+        return true;
+    }
+    _keyboard_installed = true;
+    memset(_key, 0, sizeof(_key));
+    memset(_key_down_bits, 0, sizeof(_key_down_bits));
+    return true;
+}
+
+void al_uninstall_keyboard(void)
+{
+    _keyboard_installed = false;
+    memset(_key, 0, sizeof(_key));
+    memset(_key_down_bits, 0, sizeof(_key_down_bits));
+}
+
+bool al_is_keyboard_installed(void)
+{
+    return _keyboard_installed;
+}
+
+void al_get_keyboard_state(ALLEGRO_KEYBOARD_STATE* ret_state)
+{
+    if (!ret_state) {
+        return;
+    }
+    
+    const Uint8* sdl_keyboard = SDL_GetKeyboardState(NULL);
+    
+    memset(ret_state->__key_down__internal__, 0, sizeof(ret_state->__key_down__internal__));
+    
+    for (int i = 0; i < SDL_NUM_SCANCODES && i < 512; i++) {
+        if (sdl_keyboard[i]) {
+            _key[i] = 1;
+            _key_down_bits[i / 32] |= (1 << (i % 32));
+        } else {
+            _key[i] = 0;
+            _key_down_bits[i / 32] &= ~(1 << (i % 32));
+        }
+    }
+    
+    memcpy(ret_state->__key_down__internal__, _key_down_bits, sizeof(_key_down_bits));
+}
+
+bool al_key_down(const ALLEGRO_KEYBOARD_STATE* state, int keycode)
+{
+    if (!state || keycode < 0 || keycode > ALLEGRO_KEY_MAX) {
+        return false;
+    }
+    return (state->__key_down__internal__[keycode / 32] & (1 << (keycode % 32))) != 0;
+}
+
+static const char* _keycode_names[] = {
+    "UNKNOWN", "ESCAPE", "1", "2", "3", "4", "5", "6", "7", "8",
+    "9", "0", "MINUS", "EQUALS", "BACKSPACE", "TAB", "Q", "W", "E", "R",
+    "T", "Y", "U", "I", "O", "P", "OPENBRACE", "CLOSEBRACE", "ENTER", "LCTRL",
+    "A", "S", "D", "F", "G", "H", "J", "K", "L", "SEMICOLON",
+    "QUOTE", "TILDE", "LSHIFT", "BACKSLASH", "Z", "X", "C", "V", "B", "N",
+    "M", "COMMA", "FULLSTOP", "SLASH", "RSHIFT", "PAD_ASTERISK", "LALT", "SPACE", "CAPSLOCK", "F1",
+    "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "NUMLOCK",
+    "SCROLLLOCK", "PAD_7", "PAD_8", "PAD_9", "PAD_MINUS", "PAD_4", "PAD_5", "PAD_6", "PAD_PLUS", "PAD_1",
+    "PAD_2", "PAD_3", "PAD_0", "PAD_DELETE", "F11", "F12", "PAD_ENTER", "RCTRL", "PAD_SLASH", "ALTGR",
+    "PAUSE", "HOME", "UP", "PGUP", "LEFT", "RIGHT", "END", "DOWN", "PGDN", "INSERT",
+    "DELETE", "LWIN", "RWIN", "MENU"
+};
+
+const char* al_keycode_to_name(int keycode)
+{
+    if (keycode >= 0 && keycode <= ALLEGRO_KEY_MAX && keycode < (int)(sizeof(_keycode_names) / sizeof(_keycode_names[0]))) {
+        return _keycode_names[keycode];
+    }
+    return "UNKNOWN";
+}
+
+bool al_can_set_keyboard_leds(void)
+{
+    return false;
+}
+
+bool al_set_keyboard_leds(int leds)
+{
+    (void)leds;
+    return false;
+}
+
+void* al_get_keyboard_event_source(void)
+{
+    return nullptr;
 }

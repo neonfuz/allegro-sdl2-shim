@@ -225,7 +225,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [ ] Implement `al_get_keyboard_state(ALLEGRO_KEYBOARD_STATE*)` - get current state
 - [ ] Implement `al_key_down(ALLEGRO_KEYBOARD_STATE*, int keycode)` - check key
 - [ ] Implement `al_get_key_name(int keycode)` - get key name string
-- [ ] Implement `al_set_keyboard_leds(int leds)` - set LED state
+- [x] Implement `al_set_keyboard_leds(int leds)` - set LED state
 - [ ] Implement legacy `key[]` array getter/setter functions
 - [ ] Map SDL2 `SDL_GetKeyboardState()` to `key[]` array
 
