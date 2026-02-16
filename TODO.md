@@ -34,7 +34,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Define `ALLEGRO_DEBUG`, `ALLEGRO_RELEASE` macros
 - [x] Define `ALLEGRO_` prefixed basic types (ALLEGRO_INT, ALLEGRO_FLOAT, etc.)
 - [x] Define `ALLEGRO_PI` and math constants
-- [ ] Create `allegro5/internal/allegro.h` includes wrapper
+- [x] Create `allegro5/internal/allegro.h` includes wrapper
 - [x] Create type aliases: `int8_t`, `uint8_t`, `int16_t`, `uint16_t`, etc.
 - [x] Define `NULL`, `true`, `false` compatibility if needed
 
@@ -43,40 +43,44 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 3: Display Management
 > See: [spec/core_impl.md](spec/core_impl.md) - Display Functions
 
-- [ ] Create `allegro5/allegro_display.h` header
-- [ ] Define `ALLEGRO_DISPLAY` opaque type
-- [ ] Implement `al_create_display(int w, int h)` - creates SDL_Window + SDL_Renderer
-- [ ] Implement `al_destroy_display(ALLEGRO_DISPLAY*)` - cleanup
-- [ ] Implement `al_get_display(ALLEGRO_DISPLAY*)` - get from thread-local
-- [ ] Implement `al_set_display_flag(ALLEGRO_DISPLAY*, int flag, bool onoff)` - set display flags
-- [ ] Implement `al_get_display_width(ALLEGRO_DISPLAY*)`
-- [ ] Implement `al_get_display_height(ALLEGRO_DISPLAY*)`
-- [ ] Implement `al_get_backbuffer(ALLEGRO_DISPLAY*)`
-- [ ] Implement `al_set_target_backbuffer(ALLEGRO_DISPLAY*)`
-- [ ] Implement `al_flip_display()` - SDL_RenderPresent
-- [ ] Implement `al_clear_to_color(ALLEGRO_COLOR color)`
-- [ ] Implement `al_get_window_position(ALLEGRO_DISPLAY*, int* x, int* y)`
-- [ ] Implement `al_set_window_position(ALLEGRO_DISPLAY*, int x, int y)`
-- [ ] Implement `al_get_display_event_source(ALLEGRO_DISPLAY*)`
-- [ ] Implement display flags: `ALLEGRO_WINDOWED`, `ALLEGRO_FULLSCREEN`, `ALLEGRO_RESIZABLE`, `ALLEGRO_OPENGL`
+- [x] Create `allegro5/allegro_display.h` header
+- [x] Create `allegro5/allegro_color.h` header
+- [x] Define `ALLEGRO_DISPLAY` opaque type
+- [x] Implement `al_create_display(int w, int h)` - creates SDL_Window + SDL_Renderer
+- [x] Implement `al_destroy_display(ALLEGRO_DISPLAY*)` - cleanup
+- [x] Implement `al_get_current_display()` - get current display
+- [x] Implement `al_set_current_display(ALLEGRO_DISPLAY*)` - set current display
+- [x] Implement `al_set_display_flag(ALLEGRO_DISPLAY*, int flag, bool onoff)` - set display flags
+- [x] Implement `al_get_display_width(ALLEGRO_DISPLAY*)`
+- [x] Implement `al_get_display_height(ALLEGRO_DISPLAY*)`
+- [x] Implement `al_flip_display()` - SDL_RenderPresent
+- [x] Implement `al_clear_to_color(ALLEGRO_COLOR color)`
+- [x] Implement `al_get_window_position(ALLEGRO_DISPLAY*, int* x, int* y)`
+- [x] Implement `al_set_window_position(ALLEGRO_DISPLAY*, int x, int y)`
+- [x] Implement `al_set_window_title(ALLEGRO_DISPLAY*, const char*)`
+- [x] Implement `al_resize_display(ALLEGRO_DISPLAY*, int, int)`
+- [x] Implement `al_acknowledge_resize(ALLEGRO_DISPLAY*)`
+- [x] Implement display settings functions (new_display_flags, refresh_rate, etc.)
+- [x] Implement `al_hold_bitmap_drawing` / `al_is_bitmap_drawing_held`
+- [x] Implement color mapping functions
 
 ---
 
 ## Phase 4: Color System
 > See: [spec/graphics_impl.md](spec/graphics_impl.md) - Color Functions
 
-- [ ] Create `allegro5/allegro_color.h` header
-- [ ] Define `ALLEGRO_COLOR` struct with r, g, b, a fields
-- [ ] Implement `al_map_rgb(uint8_t r, uint8_t g, uint8_t b)` - returns ALLEGRO_COLOR
-- [ ] Implement `al_map_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)`
-- [ ] Implement `al_map_rgb_f(float r, float g, float b)` - normalized
-- [ ] Implement `al_map_rgba_f(float r, float g, float b, float a)` - normalized
-- [ ] Implement `al_premul_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)` - premultiplied
-- [ ] Implement `al_premul_rgba_f(float r, float g, float b, float a)`
-- [ ] Implement `al_unmap_rgb(ALLEGRO_COLOR, uint8_t* r, uint8_t* g, uint8_t* b)`
-- [ ] Implement `al_unmap_rgba(ALLEGRO_COLOR, uint8_t* r, uint8_t* g, uint8_t* b, uint8_t* a)`
-- [ ] Implement `al_unmap_rgb_f(ALLEGRO_COLOR, float* r, float* g, float* b)`
-- [ ] Implement `al_unmap_rgba_f(ALLEGRO_COLOR, float* r, float* g, float* b, float* a)`
+- [x] Create `allegro5/allegro_color.h` header
+- [x] Define `ALLEGRO_COLOR` struct with r, g, b, a fields
+- [x] Implement `al_map_rgb(uint8_t r, uint8_t g, uint8_t b)` - returns ALLEGRO_COLOR
+- [x] Implement `al_map_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)`
+- [x] Implement `al_map_rgb_f(float r, float g, float b)` - normalized
+- [x] Implement `al_map_rgba_f(float r, float g, float b, float a)` - normalized
+- [x] Implement `al_premul_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)` - premultiplied
+- [x] Implement `al_premul_rgba_f(float r, float g, float b, float a)`
+- [x] Implement `al_unmap_rgb(ALLEGRO_COLOR, uint8_t* r, uint8_t* g, uint8_t* b)`
+- [x] Implement `al_unmap_rgba(ALLEGRO_COLOR, uint8_t* r, uint8_t* g, uint8_t* b, uint8_t* a)`
+- [x] Implement `al_unmap_rgb_f(ALLEGRO_COLOR, float* r, float* g, float* b)`
+- [x] Implement `al_unmap_rgba_f(ALLEGRO_COLOR, float* r, float* g, float* b, float* a)`
 - [ ] Implement `al_color_name_to_rgb(const char* name, ALLEGRO_COLOR* color)`
 - [ ] Implement `al_get_pixel(ALLEGRO_BITMAP*, float x, float y, ALLEGRO_COLOR* color)`
 
@@ -85,52 +89,52 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 5: Bitmap Management
 > See: [spec/graphics_impl.md](spec/graphics_impl.md) - Bitmap Management
 
-- [ ] Create `allegro5/allegro_bitmap.h` header
-- [ ] Define `ALLEGRO_BITMAP` opaque type (wraps SDL_Texture)
-- [ ] Implement `al_create_bitmap(int w, int h)` - creates SDL_Texture
-- [ ] Implement `al_destroy_bitmap(ALLEGRO_BITMAP*)` - destroys texture
-- [ ] Implement `al_get_bitmap_width(ALLEGRO_BITMAP*)`
-- [ ] Implement `al_get_bitmap_height(ALLEGRO_BITMAP*)`
-- [ ] Implement `al_get_bitmap_format(ALLEGRO_BITMAP*)`
-- [ ] Implement `al_get_bitmap_flags(ALLEGRO_BITMAP*)`
-- [ ] Implement `al_set_target_bitmap(ALLEGRO_BITMAP*)` - sets render target
-- [ ] Implement `al_get_target_bitmap()` - gets current render target
-- [ ] Implement `al_set_new_bitmap_flags(int flags)` - set default flags
-- [ ] Implement `al_get_new_bitmap_flags()` - get default flags
-- [ ] Implement `al_set_new_bitmap_format(int format)` - set default format
-- [ ] Implement `al_is_compatible_bitmap(ALLEGRO_BITMAP*)` - check compatibility
-- [ ] Implement `al_clone_bitmap(ALLEGRO_BITMAP*)` - clone bitmap
-- [ ] Implement `al_convert_bitmap(ALLEGRO_BITMAP*)` - convert format
+- [x] Create `allegro5/allegro_bitmap.h` header
+- [x] Define `ALLEGRO_BITMAP` opaque type (wraps SDL_Texture)
+- [x] Implement `al_create_bitmap(int w, int h)` - creates SDL_Texture
+- [x] Implement `al_destroy_bitmap(ALLEGRO_BITMAP*)` - destroys texture
+- [x] Implement `al_get_bitmap_width(ALLEGRO_BITMAP*)`
+- [x] Implement `al_get_bitmap_height(ALLEGRO_BITMAP*)`
+- [x] Implement `al_get_bitmap_format(ALLEGRO_BITMAP*)`
+- [x] Implement `al_get_bitmap_flags(ALLEGRO_BITMAP*)`
+- [x] Implement `al_set_target_bitmap(ALLEGRO_BITMAP*)` - sets render target
+- [x] Implement `al_get_target_bitmap()` - gets current render target
+- [x] Implement `al_set_new_bitmap_flags(int flags)` - set default flags
+- [x] Implement `al_get_new_bitmap_flags()` - get default flags
+- [x] Implement `al_set_new_bitmap_format(int format)` - set default format
+- [x] Implement `al_is_compatible_bitmap(ALLEGRO_BITMAP*)` - check compatibility
+- [x] Implement `al_clone_bitmap(ALLEGRO_BITMAP*)` - clone bitmap
+- [x] Implement `al_convert_bitmap(ALLEGRO_BITMAP*)` - convert format
+- [x] Implement `al_get_backbuffer(ALLEGRO_DISPLAY*)`
+- [x] Implement `al_set_target_backbuffer(ALLEGRO_DISPLAY*)`
+- [x] Implement `al_draw_bitmap()` - draw bitmap to screen
+- [x] Implement `al_draw_bitmap_region()` - draw portion of bitmap
+- [x] Implement `al_draw_scaled_bitmap()` - draw scaled bitmap
+- [x] Implement `al_draw_tinted_bitmap()` - draw with color tint
+- [x] Implement `al_draw_tinted_scaled_bitmap()` - draw scaled and tinted
+- [x] Implement `al_put_pixel()` - draw single pixel
+- [x] Implement `al_put_blended_pixel()` - draw blended pixel
+- [x] Implement `al_get_pixel()` - get pixel color
+- [x] Implement `al_set_clipping_rectangle()` / `al_get_clipping_rectangle()` / `al_reset_clipping_rectangle()`
 
 ---
 
 ## Phase 6: Drawing Primitives
 > See: [spec/graphics_impl.md](spec/graphics_impl.md) - Drawing Primitives
 
-- [ ] Create `allegro5/allegro_draw.h` header
-- [ ] Implement `al_draw_bitmap(ALLEGRO_BITMAP*, float dx, float dy, int flags)`
-- [ ] Implement `al_draw_bitmap_region(ALLEGRO_BITMAP*, float sx, float sy, float sw, float sh, float dx, float dy, int flags)`
-- [ ] Implement `al_draw_scaled_bitmap(ALLEGRO_BITMAP*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, int flags)`
-- [ ] Implement `al_draw_tinted_bitmap(ALLEGRO_BITMAP*, ALLEGRO_COLOR tint, float dx, float dy, int flags)`
-- [ ] Implement `al_draw_tinted_scaled_bitmap(ALLEGRO_BITMAP*, ALLEGRO_COLOR tint, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, int flags)`
-- [ ] Implement `al_draw_filled_rectangle(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color)`
-- [ ] Implement `al_draw_rectangle(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_line(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_circle(float cx, float cy, float r, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_filled_ellipse(float cx, float cy, float rx, float ry, ALLEGRO_COLOR color)`
-- [ ] Implement `al_draw_ellipse(float cx, float cy, float rx, float ry, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_arc(float cx, float cy, float r, float start_angle, float delta_angle, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_triangle(float x1, float y1, float x2, float y2, float x3, float y3, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_filled_triangle(float x1, float y1, float x2, float y2, float x3, float y3, ALLEGRO_COLOR color)`
-- [ ] Implement `al_draw_polygon(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color, float thickness)`
-- [ ] Implement `al_draw_filled_polygon(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color)`
-- [ ] Implement `al_draw_polyline(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color, float thickness, bool closed)`
-- [ ] Implement `al_put_pixel(float x, float y, ALLEGRO_COLOR color)`
-- [ ] Implement `al_put_blended_pixel(float x, float y, ALLEGRO_COLOR color)`
-- [ ] Implement `al_get_pixel(ALLEGRO_BITMAP*, float x, float y, ALLEGRO_COLOR* color)`
-- [ ] Implement `al_set_clipping_rectangle(float x, float y, float w, float h)`
-- [ ] Implement `al_get_clipping_rectangle(float* x, float* y, float* w, float* h)`
-- [ ] Implement drawing flags: `ALLEGRO_FLIP_HORIZONTAL`, `ALLEGRO_FLIP_VERTICAL`
+- [x] Create `allegro5/allegro_draw.h` header
+- [x] Implement `al_draw_filled_rectangle(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color)`
+- [x] Implement `al_draw_rectangle(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_line(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_circle(float cx, float cy, float r, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_filled_ellipse(float cx, float cy, float rx, float ry, ALLEGRO_COLOR color)`
+- [x] Implement `al_draw_ellipse(float cx, float cy, float rx, float ry, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_arc(float cx, float cy, float r, float start_angle, float delta_angle, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_triangle(float x1, float y1, float x2, float y2, float x3, float y3, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_filled_triangle(float x1, float y1, float x2, float y2, float x3, float y3, ALLEGRO_COLOR color)`
+- [x] Implement `al_draw_polygon(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color, float thickness)`
+- [x] Implement `al_draw_filled_polygon(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color)`
+- [x] Implement `al_draw_polyline(const float* vertices, int vertex_count, int stride, ALLEGRO_COLOR color, float thickness, bool closed)`
 
 ---
 
