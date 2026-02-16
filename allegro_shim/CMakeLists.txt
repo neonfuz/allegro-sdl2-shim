@@ -4,10 +4,11 @@ project(allegro_shim VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SDL2 REQUIRED sdl2)
+pkg_check_modules(SDL2_IMAGE REQUIRED sdl2_image)
+pkg_check_modules(SDL2_MIXER REQUIRED sdl2_mixer)
+pkg_check_modules(SDL2_TTF REQUIRED sdl2_ttf)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -24,8 +25,8 @@ set(SOURCES
 add_library(allegro_shim STATIC ${SOURCES})
 
 target_link_libraries(allegro_shim
-    SDL2::SDL2
-    SDL2::SDL2_image
-    SDL2::SDL2_mixer
-    SDL2::SDL2_ttf
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+    ${SDL2_MIXER_LIBRARIES}
+    ${SDL2_TTF_LIBRARIES}
 )

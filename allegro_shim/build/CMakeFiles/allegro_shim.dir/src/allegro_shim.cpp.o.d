@@ -1,0 +1,2 @@
+CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/src/allegro_shim.cpp

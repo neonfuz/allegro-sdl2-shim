@@ -22,7 +22,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Create `allegro_shim/src/` directory for implementations
 - [x] Set up `CMakeLists.txt` with SDL2 dependencies
 - [x] Add SDL2::SDL2, SDL2::SDL2_image, SDL2::SDL2_mixer, SDL2::SDL2_ttf targets
-- [ ] Create basic build test to verify CMake setup works
+- [x] Create basic build test to verify CMake setup works
 
 ---
 
