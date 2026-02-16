@@ -29,14 +29,14 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 2: Core Types and Constants
 > See: [spec/core_impl.md](spec/core_impl.md) for type mappings
 
-- [ ] Create `allegro5/allegro_base.h` with base types
-- [ ] Define `ALLEGRO_VERSION`, `ALLEGRO_VERSION_INT`
-- [ ] Define `ALLEGRO_DEBUG`, `ALLEGRO_RELEASE` macros
-- [ ] Define `ALLEGRO_` prefixed basic types (ALLEGRO_INT, ALLEGRO_FLOAT, etc.)
-- [ ] Define `ALLEGRO_PI` and math constants
+- [x] Create `allegro5/allegro_base.h` with base types
+- [x] Define `ALLEGRO_VERSION`, `ALLEGRO_VERSION_INT`
+- [x] Define `ALLEGRO_DEBUG`, `ALLEGRO_RELEASE` macros
+- [x] Define `ALLEGRO_` prefixed basic types (ALLEGRO_INT, ALLEGRO_FLOAT, etc.)
+- [x] Define `ALLEGRO_PI` and math constants
 - [ ] Create `allegro5/internal/allegro.h` includes wrapper
-- [ ] Create type aliases: `int8_t`, `uint8_t`, `int16_t`, `uint16_t`, etc.
-- [ ] Define `NULL`, `true`, `false` compatibility if needed
+- [x] Create type aliases: `int8_t`, `uint8_t`, `int16_t`, `uint16_t`, etc.
+- [x] Define `NULL`, `true`, `false` compatibility if needed
 
 ---
 
