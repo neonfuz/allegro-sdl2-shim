@@ -389,19 +389,19 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 18: Timers
 
 - [x] Create `allegro5/allegro_timer.h` header
-- [ ] Define `ALLEGRO_TIMER` type
-- [ ] Implement `al_install_timer()` - init timer system
-- [ ] Implement `al_uninstall_timer()` - shutdown timer
-- [ ] Implement `al_create_timer(double speed_secs)` - create timer
-- [ ] Implement `al_destroy_timer(ALLEGRO_TIMER*)` - destroy timer
-- [ ] Implement `al_start_timer(ALLEGRO_TIMER*)` - start timer
-- [ ] Implement `al_stop_timer(ALLEGRO_TIMER*)` - stop timer
-- [ ] Implement `al_get_timer_started(ALLEGRO_TIMER*)` - check if started
-- [ ] Implement `al_get_timer_speed(ALLEGRO_TIMER*)` - get speed
-- [ ] Implement `al_set_timer_speed(ALLEGRO_TIMER*, double speed_secs)` - set speed
-- [ ] Implement `al_get_timer_count(ALLEGRO_TIMER*)` - get count
-- [ ] Implement `al_set_timer_count(ALLEGRO_TIMER*, long long count)` - set count
-- [ ] Implement `al_get_timer_event_source(ALLEGRO_TIMER*)` - get event source
+- [x] Define `ALLEGRO_TIMER` type
+- [x] Implement `al_install_timer()` - init timer system
+- [x] Implement `al_uninstall_timer()` - shutdown timer
+- [x] Implement `al_create_timer(double speed_secs)` - create timer
+- [x] Implement `al_destroy_timer(ALLEGRO_TIMER*)` - destroy timer
+- [x] Implement `al_start_timer(ALLEGRO_TIMER*)` - start timer
+- [x] Implement `al_stop_timer(ALLEGRO_TIMER*)` - stop timer
+- [x] Implement `al_get_timer_started(ALLEGRO_TIMER*)` - check if started
+- [x] Implement `al_get_timer_speed(ALLEGRO_TIMER*)` - get speed
+- [x] Implement `al_set_timer_speed(ALLEGRO_TIMER*, double speed_secs)` - set speed
+- [x] Implement `al_get_timer_count(ALLEGRO_TIMER*)` - get count
+- [x] Implement `al_set_timer_count(ALLEGRO_TIMER*, long long count)` - set count
+- [x] Implement `al_get_timer_event_source(ALLEGRO_TIMER*)` - get event source
 
 ---
 

@@ -17,6 +17,7 @@
 #include <allegro5/allegro_mouse.h>
 #include <allegro5/allegro_joystick.h>
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_timer.h>
 #include <allegro5/internal/allegro_audio.h>
 #include <allegro5/internal/allegro_display.h>
 #include <allegro5/internal/allegro_joystick.h>
@@ -3775,4 +3776,228 @@ void al_stop_sample(ALLEGRO_SAMPLE_ID* spl_id)
 void al_stop_samples(void)
 {
     Mix_HaltChannel(-1);
+}
+
+static bool _timer_installed = false;
+static std::vector<ALLEGRO_TIMER*> _timers;
+
+struct ALLEGRO_TIMER {
+    double speed;
+    long long count;
+    bool started;
+    bool should_stop;
+    SDL_Thread* thread;
+    SDL_TimerID sdl_timer_id;
+    ALLEGRO_EVENT_SOURCE event_source;
+    SDL_mutex* mutex;
+};
+
+static Uint32 timer_callback(Uint32 interval, void* param)
+{
+    ALLEGRO_TIMER* timer = static_cast<ALLEGRO_TIMER*>(param);
+    if (!timer) {
+        return 0;
+    }
+    
+    SDL_LockMutex(timer->mutex);
+    timer->count++;
+    SDL_UnlockMutex(timer->mutex);
+    
+    return static_cast<Uint32>(timer->speed * 1000.0);
+}
+
+bool al_install_timer(void)
+{
+    if (_timer_installed) {
+        return true;
+    }
+    
+    if (SDL_InitSubSystem(SDL_INIT_TIMER) != 0) {
+        return false;
+    }
+    
+    _timer_installed = true;
+    return true;
+}
+
+void al_uninstall_timer(void)
+{
+    if (!_timer_installed) {
+        return;
+    }
+    
+    for (ALLEGRO_TIMER* timer : _timers) {
+        if (timer->started) {
+            al_stop_timer(timer);
+        }
+        al_destroy_timer(timer);
+    }
+    
+    _timers.clear();
+    
+    SDL_QuitSubSystem(SDL_INIT_TIMER);
+    _timer_installed = false;
+}
+
+ALLEGRO_TIMER* al_create_timer(double speed_secs)
+{
+    if (speed_secs <= 0) {
+        return nullptr;
+    }
+    
+    ALLEGRO_TIMER* timer = new ALLEGRO_TIMER;
+    if (!timer) {
+        return nullptr;
+    }
+    
+    timer->speed = speed_secs;
+    timer->count = 0;
+    timer->started = false;
+    timer->should_stop = false;
+    timer->thread = nullptr;
+    timer->sdl_timer_id = 0;
+    timer->mutex = SDL_CreateMutex();
+    
+    al_init_event_source(&timer->event_source);
+    
+    _timers.push_back(timer);
+    
+    return timer;
+}
+
+void al_destroy_timer(ALLEGRO_TIMER* timer)
+{
+    if (!timer) {
+        return;
+    }
+    
+    if (timer->started) {
+        al_stop_timer(timer);
+    }
+    
+    for (auto it = _timers.begin(); it != _timers.end(); ++it) {
+        if (*it == timer) {
+            _timers.erase(it);
+            break;
+        }
+    }
+    
+    al_destroy_event_source(&timer->event_source);
+    
+    if (timer->mutex) {
+        SDL_DestroyMutex(timer->mutex);
+    }
+    
+    delete timer;
+}
+
+void al_start_timer(ALLEGRO_TIMER* timer)
+{
+    if (!timer || timer->started) {
+        return;
+    }
+    
+    timer->started = true;
+    timer->should_stop = false;
+    
+    Uint32 interval = static_cast<Uint32>(timer->speed * 1000.0);
+    if (interval < 1) {
+        interval = 1;
+    }
+    
+    timer->sdl_timer_id = SDL_AddTimer(interval, timer_callback, timer);
+}
+
+void al_stop_timer(ALLEGRO_TIMER* timer)
+{
+    if (!timer || !timer->started) {
+        return;
+    }
+    
+    timer->should_stop = true;
+    
+    if (timer->sdl_timer_id != 0) {
+        SDL_RemoveTimer(timer->sdl_timer_id);
+        timer->sdl_timer_id = 0;
+    }
+    
+    timer->started = false;
+}
+
+bool al_get_timer_started(ALLEGRO_TIMER* timer)
+{
+    if (!timer) {
+        return false;
+    }
+    return timer->started;
+}
+
+double al_get_timer_speed(ALLEGRO_TIMER* timer)
+{
+    if (!timer) {
+        return 0.0;
+    }
+    return timer->speed;
+}
+
+void al_set_timer_speed(ALLEGRO_TIMER* timer, double speed_secs)
+{
+    if (!timer || speed_secs <= 0) {
+        return;
+    }
+    
+    bool was_started = timer->started;
+    
+    if (was_started) {
+        al_stop_timer(timer);
+    }
+    
+    timer->speed = speed_secs;
+    
+    if (was_started) {
+        al_start_timer(timer);
+    }
+}
+
+long long al_get_timer_count(ALLEGRO_TIMER* timer)
+{
+    if (!timer) {
+        return 0;
+    }
+    
+    SDL_LockMutex(timer->mutex);
+    long long count = timer->count;
+    SDL_UnlockMutex(timer->mutex);
+    
+    return count;
+}
+
+void al_set_timer_count(ALLEGRO_TIMER* timer, long long count)
+{
+    if (!timer) {
+        return;
+    }
+    
+    SDL_LockMutex(timer->mutex);
+    timer->count = count;
+    SDL_UnlockMutex(timer->mutex);
+}
+
+void al_add_timer_count(ALLEGRO_TIMER* timer, long long diff)
+{
+    if (!timer) {
+        return;
+    }
+    
+    SDL_LockMutex(timer->mutex);
+    timer->count += diff;
+    SDL_UnlockMutex(timer->mutex);
+}
+
+ALLEGRO_EVENT_SOURCE* al_get_timer_event_source(ALLEGRO_TIMER* timer)
+{
+    if (!timer) {
+        return nullptr;
+    }
+    return &timer->event_source;
 }

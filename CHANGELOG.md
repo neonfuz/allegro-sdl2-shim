@@ -29,5 +29,5 @@
 - Implement al_mixer_detach_sample to detach samples from mixer
 - Implement al_mixer_detach_audio_stream and fix al_attach_audio_stream_to_mixer
 - Implement al_attach_sample_to_voice for playing samples directly on voices
-
+- Implement timer subsystem (Phase 18): ALLEGRO_TIMER type, al_install/uninstall_timer, al_create/destroy_timer, al_start/stop_timer, timer speed/count control, al_get_timer_event_source
 
