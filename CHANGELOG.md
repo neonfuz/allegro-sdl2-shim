@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2026-02-16
+- Implement al_update_fs_entry_mode for refreshing file mode flags from ALLEGRO_FS_ENTRY structures (Phase 20)
 - Implement al_get_fs_entry_size for retrieving file size from ALLEGRO_FS_ENTRY structures (Phase 20)
 - Implement al_get_fs_entry_ctime for retrieving file creation time from ALLEGRO_FS_ENTRY structures (Phase 20)
 

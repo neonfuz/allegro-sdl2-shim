@@ -4523,9 +4523,43 @@ bool al_fs_entry_exists(ALLEGRO_FS_ENTRY *e)
     if (!e) {
         return false;
     }
-    
+
     AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
     return entry->exists;
+}
+
+bool al_update_fs_entry_mode(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return false;
+    }
+
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+
+    struct stat st;
+    if (stat(entry->path.c_str(), &st) != 0) {
+        return false;
+    }
+
+    entry->mode = 0;
+
+    if (S_ISDIR(st.st_mode)) {
+        entry->mode |= ALLEGRO_FSMODE_ISDIR;
+    }
+    if (S_ISREG(st.st_mode)) {
+        entry->mode |= ALLEGRO_FSMODE_ISFILE;
+    }
+    if (st.st_mode & S_IRUSR) {
+        entry->mode |= ALLEGRO_FSMODE_READ;
+    }
+    if (st.st_mode & S_IWUSR) {
+        entry->mode |= ALLEGRO_FSMODE_WRITE;
+    }
+    if (st.st_mode & S_IXUSR) {
+        entry->mode |= ALLEGRO_FSMODE_EXECUTE;
+    }
+
+    return true;
 }
 
 time_t al_get_fs_entry_atime(ALLEGRO_FS_ENTRY *e)
