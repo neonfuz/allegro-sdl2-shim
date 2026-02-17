@@ -26,5 +26,6 @@
 - Fix pre-existing audio return type cast issues in allegro_shim.cpp
 - Implement al_load_audio_stream_f for loading audio streams from ALLEGRO_FILE handles
 - Implement al_mixer_attach_sample convenience function
+- Implement al_mixer_detach_sample to detach samples from mixer
 
 

@@ -110,6 +110,7 @@ struct MixerWrapper {
     ALLEGRO_AUDIO_DEPTH depth;
     ALLEGRO_CHANNEL_CONF channels;
     ALLEGRO_MIXER_QUALITY quality;
+    ALLEGRO_SAMPLE_INSTANCE* attached_sample_instance;
 };
 
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
@@ -2936,7 +2937,14 @@ void al_destroy_mixer(ALLEGRO_MIXER* mixer)
 
 bool al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_MIXER* mixer)
 {
-    return false;
+    if (!mixer || !stream) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    wrapper->attached_sample_instance = stream;
+    
+    return true;
 }
 
 bool al_mixer_attach_sample(ALLEGRO_MIXER* mixer, ALLEGRO_SAMPLE* sample)
@@ -2951,6 +2959,25 @@ bool al_mixer_attach_sample(ALLEGRO_MIXER* mixer, ALLEGRO_SAMPLE* sample)
     }
     
     return al_attach_sample_instance_to_mixer(instance, mixer);
+}
+
+bool al_mixer_detach_sample(ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    
+    if (!wrapper->attached_sample_instance) {
+        return false;
+    }
+    
+    al_stop_sample_instance(wrapper->attached_sample_instance);
+    al_destroy_sample_instance(wrapper->attached_sample_instance);
+    wrapper->attached_sample_instance = nullptr;
+    
+    return true;
 }
 
 bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer)
