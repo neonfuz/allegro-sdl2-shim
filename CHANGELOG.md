@@ -21,4 +21,5 @@
 - Implement joystick input system (allegro_joystick.h, al_install_joystick, al_get_joystick, al_get_joystick_state, etc.)
 - Create allegro_audio.h header for audio system (types, enums, function declarations)
 - Implement al_load_sample_f for loading samples from ALLEGRO_FILE handles
+- Implement al_attach_sample_instance_to_voice and voice subsystem
 

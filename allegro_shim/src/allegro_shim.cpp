@@ -3038,16 +3038,76 @@ bool al_detach_mixer(ALLEGRO_MIXER* mixer)
 
 ALLEGRO_VOICE* al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
 {
-    return nullptr;
+    if (!_audio_installed) {
+        return nullptr;
+    }
+    
+    ALLEGRO_VOICE* voice = new ALLEGRO_VOICE;
+    if (!voice) {
+        return nullptr;
+    }
+    
+    voice->frequency = freq;
+    voice->depth = depth;
+    voice->chan_conf = chan_conf;
+    voice->is_playing = false;
+    voice->position = 0;
+    voice->source = nullptr;
+    voice->source_type = ALLEGRO_VOICE::SOURCE_NONE;
+    
+    return voice;
 }
 
 void al_destroy_voice(ALLEGRO_VOICE* voice)
 {
+    if (!voice) {
+        return;
+    }
+    
+    if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+        AllegroSampleInstance* spl = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+        if (spl && spl->channel >= 0) {
+            Mix_HaltChannel(spl->channel);
+            spl->channel = -1;
+            spl->is_playing = false;
+        }
+    } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+        AllegroAudioStream* stream = reinterpret_cast<AllegroAudioStream*>(voice->source);
+        if (stream && stream->music) {
+            Mix_HaltMusic();
+        }
+    }
+    
+    delete voice;
 }
 
 bool al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_VOICE* voice)
 {
-    return false;
+    if (!stream || !voice) {
+        return false;
+    }
+    
+    AllegroSampleInstance* spl = reinterpret_cast<AllegroSampleInstance*>(stream);
+    
+    if (voice->source_type != ALLEGRO_VOICE::SOURCE_NONE) {
+        if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+            AllegroSampleInstance* old = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+            if (old && old->channel >= 0) {
+                Mix_HaltChannel(old->channel);
+                old->channel = -1;
+                old->is_playing = false;
+            }
+        } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+            Mix_HaltMusic();
+        }
+    }
+    
+    voice->source = spl;
+    voice->source_type = ALLEGRO_VOICE::SOURCE_SAMPLE;
+    voice->position = 0;
+    voice->is_playing = spl->is_playing;
+    
+    return true;
 }
 
 bool al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_VOICE* voice)
@@ -3066,37 +3126,90 @@ void al_detach_voice(ALLEGRO_VOICE* voice)
 
 unsigned int al_get_voice_frequency(const ALLEGRO_VOICE* voice)
 {
-    return 0;
+    if (!voice) {
+        return 0;
+    }
+    return voice->frequency;
 }
 
 unsigned int al_get_voice_position(const ALLEGRO_VOICE* voice)
 {
-    return 0;
+    if (!voice) {
+        return 0;
+    }
+    return voice->position;
 }
 
 ALLEGRO_CHANNEL_CONF al_get_voice_channels(const ALLEGRO_VOICE* voice)
 {
-    return ALLEGRO_CHANNEL_CONF_2;
+    if (!voice) {
+        return ALLEGRO_CHANNEL_CONF_2;
+    }
+    return voice->chan_conf;
 }
 
 ALLEGRO_AUDIO_DEPTH al_get_voice_depth(const ALLEGRO_VOICE* voice)
 {
-    return ALLEGRO_AUDIO_DEPTH_INT16;
+    if (!voice) {
+        return ALLEGRO_AUDIO_DEPTH_INT16;
+    }
+    return voice->depth;
 }
 
 bool al_get_voice_playing(const ALLEGRO_VOICE* voice)
 {
-    return false;
+    if (!voice) {
+        return false;
+    }
+    
+    if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+        AllegroSampleInstance* spl = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+        if (spl && spl->channel >= 0) {
+            return Mix_Playing(spl->channel) != 0;
+        }
+    } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+        return Mix_PlayingMusic() != 0;
+    }
+    
+    return voice->is_playing;
 }
 
 bool al_set_voice_position(ALLEGRO_VOICE* voice, unsigned int pos)
 {
-    return false;
+    if (!voice) {
+        return false;
+    }
+    voice->position = pos;
+    return true;
 }
 
 bool al_set_voice_playing(ALLEGRO_VOICE* voice, bool val)
 {
-    return false;
+    if (!voice) {
+        return false;
+    }
+    
+    if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+        AllegroSampleInstance* spl = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+        if (spl && spl->channel >= 0) {
+            if (val && !Mix_Playing(spl->channel)) {
+                Mix_PlayChannel(spl->channel, spl->chunk, spl->loop == ALLEGRO_PLAYMODE_LOOP ? -1 : 0);
+                spl->is_playing = true;
+            } else if (!val && Mix_Playing(spl->channel)) {
+                Mix_HaltChannel(spl->channel);
+                spl->is_playing = false;
+            }
+        }
+    } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+        if (val) {
+            Mix_ResumeMusic();
+        } else {
+            Mix_PauseMusic();
+        }
+    }
+    
+    voice->is_playing = val;
+    return true;
 }
 
 ALLEGRO_AUDIO_STREAM* al_create_audio_stream(size_t buffer_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)

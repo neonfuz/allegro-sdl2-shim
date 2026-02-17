@@ -330,7 +330,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_get_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*)`
 - [x] Implement `al_set_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*, int mode)`
 - [x] Implement `al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_MIXER*)`
-- [ ] Implement `al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_VOICE*)`
+- [x] Implement `al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_VOICE*)`
 
 ---
 

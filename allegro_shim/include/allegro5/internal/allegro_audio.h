@@ -12,4 +12,14 @@ struct ALLEGRO_SAMPLE {
     bool free_buffer;
 };
 
+struct ALLEGRO_VOICE {
+    unsigned int frequency;
+    int depth;
+    int chan_conf;
+    bool is_playing;
+    unsigned int position;
+    void* source;
+    enum { SOURCE_NONE, SOURCE_SAMPLE, SOURCE_STREAM, SOURCE_MIXER } source_type;
+};
+
 #endif
