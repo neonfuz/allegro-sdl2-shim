@@ -2007,6 +2007,22 @@ bool al_is_mouse_installed(void)
     return _mouse_installed;
 }
 
+int install_mouse(void)
+{
+    return al_install_mouse() ? 0 : -1;
+}
+
+int remove_mouse(void)
+{
+    al_uninstall_mouse();
+    return 0;
+}
+
+void* al_get_mouse_event_source(void)
+{
+    return nullptr;
+}
+
 void al_get_mouse_state(ALLEGRO_MOUSE_STATE* ret_state)
 {
     if (!ret_state) {

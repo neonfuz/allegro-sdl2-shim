@@ -1,0 +1,3 @@
+/Users/neonfuz/code/zquest-port/allegro_shim/build/CMakeFiles/allegro_shim.dir
+/Users/neonfuz/code/zquest-port/allegro_shim/build/CMakeFiles/edit_cache.dir
+/Users/neonfuz/code/zquest-port/allegro_shim/build/CMakeFiles/rebuild_cache.dir

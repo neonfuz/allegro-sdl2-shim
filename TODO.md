@@ -239,11 +239,9 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Define `ALLEGRO_MOUSE_STATE` type
 - [x] Define `ALLEGRO_MOUSE_CURSOR` type
 - [x] Define `ALLEGRO_MOUSE_*` button constants
-- [ ] Implement `install_mouse()` - initialize mouse (legacy)
-- [ ] Implement `remove_mouse()` - shutdown mouse (legacy)
-- [x] Implement `al_install_mouse()` - A5 mouse init
-- [x] Implement `al_uninstall_mouse()` - A5 mouse shutdown
-- [ ] Implement `al_get_mouse_event_source()` - get event source
+- [x] Implement `install_mouse()` - initialize mouse (legacy)
+- [x] Implement `remove_mouse()` - shutdown mouse (legacy)
+- [x] Implement `al_get_mouse_event_source()` - get event source
 - [x] Implement `al_get_mouse_state(ALLEGRO_MOUSE_STATE*)` - get state
 - [x] Implement `al_mouse_button_down(ALLEGRO_MOUSE_STATE*, int button)` - check button
 - [x] Implement `al_get_mouse_state_axis(ALLEGRO_MOUSE_STATE*, int axis)` - get axis

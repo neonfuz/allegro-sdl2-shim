@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/neonfuz/code/zquest-port/allegro_shim/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

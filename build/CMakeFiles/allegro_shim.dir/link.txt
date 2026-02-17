@@ -1,0 +1,2 @@
+/usr/bin/ar qc liballegro_shim.a CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o
+/usr/bin/ranlib liballegro_shim.a

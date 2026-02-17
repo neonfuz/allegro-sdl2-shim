@@ -47,6 +47,9 @@ bool al_set_mouse_z(float z);
 bool al_set_mouse_w(float w);
 bool al_get_mouse_cursor_position(int* x, int* y);
 
+int install_mouse(void);
+int remove_mouse(void);
+
 #ifdef __cplusplus
 }
 #endif
