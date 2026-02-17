@@ -4537,3 +4537,13 @@ time_t al_get_fs_entry_atime(ALLEGRO_FS_ENTRY *e)
     AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
     return entry->atime;
 }
+
+time_t al_get_fs_entry_mtime(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return 0;
+    }
+    
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+    return entry->mtime;
+}
