@@ -771,6 +771,7 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_keyboard.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_mouse.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_state.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_timer.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_transform.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_audio.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_display.h \
@@ -1190,6 +1191,8 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/clocale:
 
+/Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_timer.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/stdexcept:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/insert_iterator.h:
@@ -1337,10 +1340,6 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_void.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_valid_expansion.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/for_each.h:
-
-/opt/homebrew/include/SDL2/SDL_locale.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_constant_evaluated.h:
 
@@ -2285,6 +2284,10 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg___gnuc_va_list.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy_n.h:
+
+/opt/homebrew/include/SDL2/SDL_locale.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/for_each.h:
 
 /opt/homebrew/include/SDL2/SDL_config.h:
 

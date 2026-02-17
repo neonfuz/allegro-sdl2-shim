@@ -440,7 +440,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Define `ALLEGRO_FS_ENTRY` type
 - [x] Define `ALLEGRO_FS_MODE` enum
 - [x] Define `ALLEGRO_FILE` type (wraps FILE*)
-- [ ] Define `ALLEGRO_FILE_MODE` enum
+- [x] Define `ALLEGRO_FILE_MODE` enum
 - [ ] Implement `al_create_fs_entry(const char* path)` - create file entry
 - [ ] Implement `al_destroy_fs_entry(ALLEGRO_FS_ENTRY*)` - destroy entry
 - [ ] Implement `al_get_fs_entry_name(ALLEGRO_FS_ENTRY*)` - get filename
