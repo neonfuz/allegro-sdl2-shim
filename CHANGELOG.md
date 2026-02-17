@@ -1,4 +1,7 @@
-#Changelog
+# Changelog
+
+## 2026-02-16
+- Marked config functions as complete in TODO: al_add_config_section, al_get_config_value, al_set_config_value, al_get_first_config_section, al_get_next_config_section, al_get_first_config_entry, al_get_next_config_entry
 
 ## 2026-02-16
 - Create allegro_shim directory structure (allegro_shim/include/allegro5/ and allegro_shim/src/)

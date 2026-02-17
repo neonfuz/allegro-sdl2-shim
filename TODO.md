@@ -420,16 +420,16 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_load_config_f(ALLEGRO_FILE* fp, const char* origin)` - load from file handle
 - [x] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
 - [x] Implement `al_save_config_f(ALLEGRO_FILE* fp, ALLEGRO_CONFIG*)` - save to file handle
-- [ ] Implement `al_add_config_section(ALLEGRO_CONFIG*, const char* section)` - add section
-- [ ] Implement `al_add_config_key(ALLEGRO_CONFIG*, const char* section, const char* key, const char* value)` - add key
-- [ ] Implement `al_get_config_value(ALLEGRO_CONFIG*, const char* section, const char* key, const char* default_value)` - get value
-- [ ] Implement `al_set_config_value(ALLEGRO_CONFIG*, const char* section, const char* key, const char* value)` - set value
+- [x] Implement `al_add_config_section(ALLEGRO_CONFIG*, const char* section)` - add section
+- [x] Implement `al_add_config_key(ALLEGRO_CONFIG*, const char* section, const char* key, const char* value)` - add key (implemented as al_set_config_value)
+- [x] Implement `al_get_config_value(ALLEGRO_CONFIG*, const char* section, const char* key, const char* default_value)` - get value
+- [x] Implement `al_set_config_value(ALLEGRO_CONFIG*, const char* section, const char* key, const char* value)` - set value
 - [ ] Implement `al_merge_config(ALLEGRO_CONFIG*, const ALLEGRO_CONFIG*)` - merge configs
 - [ ] Implement `al_merge_config_into(ALLEGRO_CONFIG*, const ALLEGRO_CONFIG*)` - merge into
-- [ ] Implement `al_get_first_config_section(ALLEGRO_CONFIG*, ALLEGRO_CONFIG_SECTION** iterator)` - iterate sections
-- [ ] Implement `al_get_next_config_section(ALLEGRO_CONFIG_SECTION** iterator)` - next section
-- [ ] Implement `al_get_first_config_entry(ALLEGRO_CONFIG*, const char* section, ALLEGRO_CONFIG_ENTRY** iterator)` - iterate entries
-- [ ] Implement `al_get_next_config_entry(ALLEGRO_CONFIG_ENTRY** iterator)` - next entry
+- [x] Implement `al_get_first_config_section(ALLEGRO_CONFIG*, ALLEGRO_CONFIG_SECTION** iterator)` - iterate sections
+- [x] Implement `al_get_next_config_section(ALLEGRO_CONFIG_SECTION** iterator)` - next section
+- [x] Implement `al_get_first_config_entry(ALLEGRO_CONFIG*, const char* section, ALLEGRO_CONFIG_ENTRY** iterator)` - iterate entries
+- [x] Implement `al_get_next_config_entry(ALLEGRO_CONFIG_ENTRY** iterator)` - next entry
 
 ---
 
