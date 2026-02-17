@@ -19,6 +19,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_timer.h>
 #include <allegro5/internal/allegro_audio.h>
+#include <allegro5/internal/allegro_config.h>
 #include <allegro5/internal/allegro_display.h>
 #include <allegro5/internal/allegro_joystick.h>
 #include <cstdio>
@@ -4022,4 +4023,337 @@ ALLEGRO_EVENT_SOURCE* al_get_timer_event_source(ALLEGRO_TIMER* timer)
         return nullptr;
     }
     return &timer->event_source;
+}
+
+ALLEGRO_CONFIG* al_create_config(void)
+{
+    AllegroConfig* config = new AllegroConfig;
+    if (!config) {
+        return nullptr;
+    }
+    
+    AllegroConfigSection* general = new AllegroConfigSection;
+    if (!general) {
+        delete config;
+        return nullptr;
+    }
+    
+    general->name = "general";
+    config->sections["general"] = general;
+    
+    return reinterpret_cast<ALLEGRO_CONFIG*>(config);
+}
+
+void al_destroy_config(ALLEGRO_CONFIG* config)
+{
+    if (!config) {
+        return;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(config);
+    for (auto& pair : cfg->sections) {
+        delete pair.second;
+    }
+    cfg->sections.clear();
+    delete cfg;
+}
+
+const char* al_get_config_value(const ALLEGRO_CONFIG* config, const char* section, const char* key, const char* default_value)
+{
+    if (!config || !key) {
+        return default_value;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(config));
+    
+    std::string section_name = section ? section : "general";
+    auto section_it = cfg->sections.find(section_name);
+    if (section_it == cfg->sections.end()) {
+        return default_value;
+    }
+    
+    AllegroConfigSection* sec = section_it->second;
+    auto entry_it = sec->entries.find(key);
+    if (entry_it == sec->entries.end()) {
+        return default_value;
+    }
+    
+    return entry_it->second.c_str();
+}
+
+void al_set_config_value(ALLEGRO_CONFIG* config, const char* section, const char* key, const char* value)
+{
+    if (!config || !key) {
+        return;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(config);
+    std::string section_name = section ? section : "general";
+    
+    auto section_it = cfg->sections.find(section_name);
+    if (section_it == cfg->sections.end()) {
+        AllegroConfigSection* new_section = new AllegroConfigSection;
+        new_section->name = section_name;
+        cfg->sections[section_name] = new_section;
+        section_it = cfg->sections.find(section_name);
+    }
+    
+    AllegroConfigSection* sec = section_it->second;
+    std::string value_str = value ? value : "";
+    sec->entries[key] = value_str;
+}
+
+void al_add_config_section(ALLEGRO_CONFIG* config, const char* name)
+{
+    if (!config || !name) {
+        return;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(config);
+    
+    if (cfg->sections.find(name) != cfg->sections.end()) {
+        return;
+    }
+    
+    AllegroConfigSection* section = new AllegroConfigSection;
+    section->name = name;
+    cfg->sections[name] = section;
+}
+
+const char* al_get_first_config_section(const ALLEGRO_CONFIG* config, ALLEGRO_CONFIG_SECTION** iterator)
+{
+    if (!config || !iterator) {
+        return nullptr;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(config));
+    
+    if (cfg->sections.empty()) {
+        *iterator = nullptr;
+        return nullptr;
+    }
+    
+    auto it = cfg->sections.begin();
+    *iterator = reinterpret_cast<ALLEGRO_CONFIG_SECTION*>(it->second);
+    return it->first.c_str();
+}
+
+const char* al_get_next_config_section(ALLEGRO_CONFIG_SECTION** iterator)
+{
+    if (!iterator || !*iterator) {
+        return nullptr;
+    }
+    
+    return nullptr;
+}
+
+const char* al_get_first_config_entry(const ALLEGRO_CONFIG* config, const char* section, ALLEGRO_CONFIG_ENTRY** iterator)
+{
+    if (!config || !section || !iterator) {
+        return nullptr;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(config));
+    auto section_it = cfg->sections.find(section);
+    
+    if (section_it == cfg->sections.end()) {
+        *iterator = nullptr;
+        return nullptr;
+    }
+    
+    AllegroConfigSection* sec = section_it->second;
+    
+    if (sec->entries.empty()) {
+        *iterator = nullptr;
+        return nullptr;
+    }
+    
+    auto it = sec->entries.begin();
+    *iterator = reinterpret_cast<ALLEGRO_CONFIG_ENTRY*>(const_cast<std::string*>(&it->first));
+    return it->first.c_str();
+}
+
+const char* al_get_next_config_entry(ALLEGRO_CONFIG_ENTRY** iterator)
+{
+    (void)iterator;
+    return nullptr;
+}
+
+static void _trim_string(std::string& str)
+{
+    size_t start = 0;
+    while (start < str.length() && (str[start] == ' ' || str[start] == '\t')) {
+        start++;
+    }
+    size_t end = str.length();
+    while (end > start && (str[end-1] == ' ' || str[end-1] == '\t' || str[end-1] == '\r' || str[end-1] == '\n')) {
+        end--;
+    }
+    if (start > 0 || end < str.length()) {
+        str = str.substr(start, end - start);
+    }
+}
+
+ALLEGRO_CONFIG* al_load_config_file(const char* filename)
+{
+    if (!filename) {
+        return nullptr;
+    }
+    
+    FILE* fp = fopen(filename, "r");
+    if (!fp) {
+        return nullptr;
+    }
+    
+    AllegroConfig* config = new AllegroConfig;
+    if (!config) {
+        fclose(fp);
+        return nullptr;
+    }
+    
+    config->filename = filename;
+    
+    AllegroConfigSection* current_section = new AllegroConfigSection;
+    current_section->name = "general";
+    config->sections["general"] = current_section;
+    
+    char line[4096];
+    while (fgets(line, sizeof(line), fp)) {
+        std::string s = line;
+        _trim_string(s);
+        
+        if (s.empty()) {
+            continue;
+        }
+        
+        if (s[0] == ';' || s[0] == '#') {
+            continue;
+        }
+        
+        if (s[0] == '[') {
+            size_t end_bracket = s.find(']');
+            if (end_bracket != std::string::npos) {
+                std::string section_name = s.substr(1, end_bracket - 1);
+                _trim_string(section_name);
+                
+                if (config->sections.find(section_name) == config->sections.end()) {
+                    AllegroConfigSection* new_section = new AllegroConfigSection;
+                    new_section->name = section_name;
+                    config->sections[section_name] = new_section;
+                }
+                current_section = config->sections[section_name];
+            }
+            continue;
+        }
+        
+        size_t eq_pos = s.find('=');
+        if (eq_pos != std::string::npos) {
+            std::string key = s.substr(0, eq_pos);
+            std::string value = s.substr(eq_pos + 1);
+            _trim_string(key);
+            _trim_string(value);
+            
+            if (!key.empty()) {
+                current_section->entries[key] = value;
+            }
+        }
+    }
+    
+    fclose(fp);
+    return reinterpret_cast<ALLEGRO_CONFIG*>(config);
+}
+
+ALLEGRO_CONFIG* al_load_config_f(ALLEGRO_FILE* fp, const char* origin)
+{
+    (void)origin;
+    
+    if (!fp || !fp->fp) {
+        return nullptr;
+    }
+    
+    AllegroConfig* config = new AllegroConfig;
+    if (!config) {
+        return nullptr;
+    }
+    
+    if (origin) {
+        config->filename = origin;
+    }
+    
+    AllegroConfigSection* current_section = new AllegroConfigSection;
+    current_section->name = "general";
+    config->sections["general"] = current_section;
+    
+    char line[4096];
+    while (fgets(line, sizeof(line), fp->fp)) {
+        std::string s = line;
+        _trim_string(s);
+        
+        if (s.empty()) {
+            continue;
+        }
+        
+        if (s[0] == ';' || s[0] == '#') {
+            continue;
+        }
+        
+        if (s[0] == '[') {
+            size_t end_bracket = s.find(']');
+            if (end_bracket != std::string::npos) {
+                std::string section_name = s.substr(1, end_bracket - 1);
+                _trim_string(section_name);
+                
+                if (config->sections.find(section_name) == config->sections.end()) {
+                    AllegroConfigSection* new_section = new AllegroConfigSection;
+                    new_section->name = section_name;
+                    config->sections[section_name] = new_section;
+                }
+                current_section = config->sections[section_name];
+            }
+            continue;
+        }
+        
+        size_t eq_pos = s.find('=');
+        if (eq_pos != std::string::npos) {
+            std::string key = s.substr(0, eq_pos);
+            std::string value = s.substr(eq_pos + 1);
+            _trim_string(key);
+            _trim_string(value);
+            
+            if (!key.empty()) {
+                current_section->entries[key] = value;
+            }
+        }
+    }
+    
+    return reinterpret_cast<ALLEGRO_CONFIG*>(config);
+}
+
+bool al_save_config_file(const char* filename, const ALLEGRO_CONFIG* config)
+{
+    if (!filename || !config) {
+        return false;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(config));
+    
+    FILE* fp = fopen(filename, "w");
+    if (!fp) {
+        return false;
+    }
+    
+    for (auto& section_pair : cfg->sections) {
+        AllegroConfigSection* section = section_pair.second;
+        
+        fprintf(fp, "[%s]\n", section->name.c_str());
+        
+        for (auto& entry : section->entries) {
+            fprintf(fp, "%s=%s\n", entry.first.c_str(), entry.second.c_str());
+        }
+        
+        fprintf(fp, "\n");
+    }
+    
+    fclose(fp);
+    return true;
 }

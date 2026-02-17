@@ -410,12 +410,14 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 
 - [x] Create `allegro5/allegro_config.h` header
 - [x] Define `ALLEGRO_CONFIG` type
-- [ ] Define `ALLEGRO_CONFIG_SECTION` iterator type
-- [ ] Define `ALLEGRO_CONFIG_ENTRY` iterator type
-- [ ] Implement `al_create_config()` - create empty config
-- [ ] Implement `al_destroy_config(ALLEGRO_CONFIG*)` - destroy config
-- [ ] Implement `al_load_config_file(const char* filename)` - load from file
-- [ ] Implement `al_load_config_f(ALLEGRO_FILE* fp, const char* origin)` - load from file handle
+- [x] Define `ALLEGRO_CONFIG_SECTION` iterator type
+- [x] Define `ALLEGRO_CONFIG_ENTRY` iterator type
+- [x] Implement `al_create_config()` - create empty config
+- [x] Implement `al_destroy_config(ALLEGRO_CONFIG*)` - destroy config
+- [x] Implement `al_load_config_file(const char* filename)` - load from file
+- [x] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
+- [x] Implement `al_load_config_file(const char* filename)` - load from file
+- [x] Implement `al_load_config_f(ALLEGRO_FILE* fp, const char* origin)` - load from file handle
 - [ ] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
 - [ ] Implement `al_save_config_f(ALLEGRO_FILE* fp, ALLEGRO_CONFIG*)` - save to file handle
 - [ ] Implement `al_add_config_section(ALLEGRO_CONFIG*, const char* section)` - add section
