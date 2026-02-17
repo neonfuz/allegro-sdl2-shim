@@ -759,6 +759,7 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdbool.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdint.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_audio.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_base.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_bitmap.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_blender.h \
@@ -766,11 +767,14 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_display.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_draw.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_events.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_joystick.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_keyboard.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_mouse.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_state.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_transform.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_audio.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_display.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_joystick.h \
   /opt/homebrew/include/SDL2/SDL.h \
   /opt/homebrew/include/SDL2/SDL_assert.h \
   /opt/homebrew/include/SDL2/SDL_atomic.h \
@@ -799,6 +803,7 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
   /opt/homebrew/include/SDL2/SDL_messagebox.h \
   /opt/homebrew/include/SDL2/SDL_metal.h \
   /opt/homebrew/include/SDL2/SDL_misc.h \
+  /opt/homebrew/include/SDL2/SDL_mixer.h \
   /opt/homebrew/include/SDL2/SDL_mouse.h \
   /opt/homebrew/include/SDL2/SDL_mutex.h \
   /opt/homebrew/include/SDL2/SDL_pixels.h \
@@ -841,7 +846,13 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 
 /opt/homebrew/include/SDL2/SDL_mouse.h:
 
+/opt/homebrew/include/SDL2/SDL_mixer.h:
+
 /opt/homebrew/include/SDL2/SDL_misc.h:
+
+/opt/homebrew/include/SDL2/SDL_metal.h:
+
+/opt/homebrew/include/SDL2/SDL_main.h:
 
 /opt/homebrew/include/SDL2/SDL_joystick.h:
 
@@ -862,6 +873,10 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /opt/homebrew/include/SDL2/SDL_assert.h:
 
 /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_display.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_set.h:
+
+/Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_audio.h:
 
 /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_state.h:
 
@@ -1022,6 +1037,8 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
+
+/Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_joystick.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_once_t.h:
 
@@ -1278,6 +1295,8 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/utility:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/type_list.h:
+
+/Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_joystick.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/vector.h:
 
@@ -1639,8 +1658,6 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/align.h:
 
-/opt/homebrew/include/SDL2/SDL_metal.h:
-
 /opt/homebrew/include/SDL2/SDL_sensor.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__math/special_functions.h:
@@ -1782,8 +1799,6 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/memory.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/ios.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_set.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/algorithm:
 
@@ -2135,6 +2150,8 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/minmax_element.h:
 
+/Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_audio.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:
@@ -2204,8 +2221,6 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: /Users/neonfuz/code/zquest-p
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/in_out_result.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/make_heap.h:
-
-/opt/homebrew/include/SDL2/SDL_main.h:
 
 /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/src/allegro_shim.cpp:
 

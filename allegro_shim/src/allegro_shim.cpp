@@ -4,6 +4,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_rwops.h>
 #include <allegro5/allegro_display.h>
 #include <allegro5/allegro_keyboard.h>
 #include <allegro5/allegro_color.h>
@@ -72,6 +73,11 @@ static std::vector<ALLEGRO_JOYSTICK*> _joysticks;
 static bool _audio_installed = false;
 static int _audio_reserved_channels = 0;
 static ALLEGRO_MIXER* _default_mixer = nullptr;
+
+struct ALLEGRO_FILE {
+    FILE* fp;
+    bool close_on_destroy;
+};
 
 struct AllegroSampleInstance {
     Mix_Chunk* chunk;
@@ -2579,6 +2585,38 @@ ALLEGRO_SAMPLE* al_load_sample(const char* filename)
 bool al_save_sample(const char* filename, ALLEGRO_SAMPLE* spl)
 {
     return false;
+}
+
+ALLEGRO_SAMPLE* al_load_sample_f(ALLEGRO_FILE* fp, const char* ident)
+{
+    if (!fp || !fp->fp || !_audio_installed) {
+        return nullptr;
+    }
+    
+    SDL_RWops* rw = SDL_RWFromFP(fp->fp, SDL_FALSE);
+    if (!rw) {
+        return nullptr;
+    }
+    
+    Mix_Chunk* chunk = Mix_LoadWAV_RW(rw, 0);
+    if (!chunk) {
+        return nullptr;
+    }
+    
+    ALLEGRO_SAMPLE* sample = new ALLEGRO_SAMPLE;
+    if (!sample) {
+        Mix_FreeChunk(chunk);
+        return nullptr;
+    }
+    
+    sample->num_samples = chunk->alen / 2;
+    sample->frequency = 44100;
+    sample->depth = ALLEGRO_AUDIO_DEPTH_INT16;
+    sample->chan_conf = ALLEGRO_CHANNEL_CONF_2;
+    sample->data = chunk;
+    sample->free_buffer = true;
+    
+    return sample;
 }
 
 ALLEGRO_SAMPLE_INSTANCE* al_create_sample_instance(ALLEGRO_SAMPLE* data)

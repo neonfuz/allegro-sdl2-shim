@@ -16,6 +16,7 @@ typedef struct ALLEGRO_AUDIO_STREAM ALLEGRO_AUDIO_STREAM;
 typedef struct ALLEGRO_MIXER ALLEGRO_MIXER;
 typedef struct ALLEGRO_VOICE ALLEGRO_VOICE;
 typedef struct ALLEGRO_SAMPLE_ID ALLEGRO_SAMPLE_ID;
+typedef struct ALLEGRO_FILE ALLEGRO_FILE;
 
 typedef enum {
     ALLEGRO_AUDIO_DEPTH_INT8 = 0x01,
@@ -68,6 +69,7 @@ ALLEGRO_AUDIO_DEPTH al_get_sample_depth(const ALLEGRO_SAMPLE* spl);
 ALLEGRO_CHANNEL_CONF al_get_sample_channels(const ALLEGRO_SAMPLE* spl);
 void* al_get_sample_data(const ALLEGRO_SAMPLE* spl);
 ALLEGRO_SAMPLE* al_load_sample(const char* filename);
+ALLEGRO_SAMPLE* al_load_sample_f(ALLEGRO_FILE* fp, const char* ident);
 bool al_save_sample(const char* filename, ALLEGRO_SAMPLE* spl);
 
 ALLEGRO_SAMPLE_INSTANCE* al_create_sample_instance(ALLEGRO_SAMPLE* data);

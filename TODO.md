@@ -304,7 +304,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_get_sample_length(ALLEGRO_SAMPLE*)`
 - [x] Implement `al_get_sample_data(ALLEGRO_SAMPLE*)`
 - [x] Implement `al_load_sample(const char* filename)` - load from file
-- [ ] Implement `al_load_sample_f(ALLEGRO_FILE* fp, const char* ident)` - load from file handle
+- [x] Implement `al_load_sample_f(ALLEGRO_FILE* fp, const char* ident)` - load from file handle
 - [x] Implement `al_save_sample(const char* filename, ALLEGRO_SAMPLE*)` - save to file
 
 ---
