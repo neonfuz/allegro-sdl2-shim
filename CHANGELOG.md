@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-02-16
+- Define ALLEGRO_FILE struct in internal header (allegro_shim/include/allegro5/internal/allegro_file.h) with FILE* wrapper and memory file support
+
+## 2026-02-16
 - Define ALLEGRO_FS_ENTRY type and ALLEGRO_FS_MODE enum in allegro_file.h for filesystem operations
 
 ## 2026-02-16
