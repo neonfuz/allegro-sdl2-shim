@@ -3288,6 +3288,43 @@ ALLEGRO_AUDIO_STREAM* al_load_audio_stream(const char* filename, size_t buffer_c
     return reinterpret_cast<ALLEGRO_AUDIO_STREAM*>(stream);
 }
 
+ALLEGRO_AUDIO_STREAM* al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples)
+{
+    if (!fp || !fp->fp || !_audio_installed) {
+        return nullptr;
+    }
+    
+    SDL_RWops* rw = SDL_RWFromFP(fp->fp, SDL_FALSE);
+    if (!rw) {
+        return nullptr;
+    }
+    
+    Mix_Music* music = Mix_LoadMUS_RW(rw, 0);
+    if (!music) {
+        return nullptr;
+    }
+    
+    AllegroAudioStream* stream = new AllegroAudioStream;
+    if (!stream) {
+        Mix_FreeMusic(music);
+        return nullptr;
+    }
+    
+    stream->music = music;
+    stream->is_playing = false;
+    stream->loop = ALLEGRO_PLAYMODE_ONCE;
+    stream->gain = 1.0f;
+    stream->pan = 0.0f;
+    stream->speed = 1.0f;
+    stream->frequency = 44100;
+    stream->depth = ALLEGRO_AUDIO_DEPTH_INT16;
+    stream->channels = ALLEGRO_CHANNEL_CONF_2;
+    stream->buffer_samples = samples;
+    stream->buffer_count = buffer_count;
+    
+    return reinterpret_cast<ALLEGRO_AUDIO_STREAM*>(stream);
+}
+
 unsigned int al_get_audio_stream_frequency(const ALLEGRO_AUDIO_STREAM* stream)
 {
     if (!stream) {

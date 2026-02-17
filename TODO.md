@@ -355,7 +355,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM*, ALLEGRO_MIXER*)`
 - [x] Implement `al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM*, ALLEGRO_VOICE*)`
 - [x] Implement `al_load_audio_stream(const char* filename, size_t buffer_count, unsigned int samples)`
-- [ ] Implement `al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples)`
+- [x] Implement `al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples)`
 
 ---
 

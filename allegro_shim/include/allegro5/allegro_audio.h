@@ -132,6 +132,7 @@ ALLEGRO_AUDIO_STREAM* al_create_audio_stream(size_t buffer_count, unsigned int s
 void al_destroy_audio_stream(ALLEGRO_AUDIO_STREAM* stream);
 void al_drain_audio_stream(ALLEGRO_AUDIO_STREAM* stream);
 ALLEGRO_AUDIO_STREAM* al_load_audio_stream(const char* filename, size_t buffer_count, unsigned int samples);
+ALLEGRO_AUDIO_STREAM* al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples);
 unsigned int al_get_audio_stream_frequency(const ALLEGRO_AUDIO_STREAM* stream);
 unsigned int al_get_audio_stream_length(const ALLEGRO_AUDIO_STREAM* stream);
 unsigned int al_get_audio_stream_fragments(const ALLEGRO_AUDIO_STREAM* stream);
