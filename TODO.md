@@ -408,7 +408,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 19: Configuration Files
 > See: [spec/file_impl.md](spec/file_impl.md) - Configuration Functions
 
-- [ ] Create `allegro5/allegro_config.h` header
+- [x] Create `allegro5/allegro_config.h` header
 - [ ] Define `ALLEGRO_CONFIG` type
 - [ ] Define `ALLEGRO_CONFIG_SECTION` iterator type
 - [ ] Define `ALLEGRO_CONFIG_ENTRY` iterator type
