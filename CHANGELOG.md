@@ -37,4 +37,5 @@
 - Implement al_load_config_f for loading config files from ALLEGRO_FILE handles
 - Implement al_save_config_f for saving config files to ALLEGRO_FILE handles (Phase 19)
 - Implement al_merge_config and al_merge_config_into for merging configuration files (Phase 19)
+- Create allegro_file.h header (Phase 20): ALLEGRO_FILE, ALLEGRO_FILE_INTERFACE types, ALLEGRO_SEEK enum, and all file I/O function declarations
 
