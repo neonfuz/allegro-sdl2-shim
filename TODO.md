@@ -374,7 +374,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_mixer_set_gain(ALLEGRO_MIXER*, float gain)`
 - [x] Implement `al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
 - [x] Implement `al_destroy_voice(ALLEGRO_VOICE*)`
-- [ ] Implement `al_attach_sample_to_voice(ALLEGRO_SAMPLE*, ALLEGRO_VOICE*)`
+- [x] Implement `al_attach_sample_to_voice(ALLEGRO_SAMPLE*, ALLEGRO_VOICE*)`
 - [x] Implement `al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM*, ALLEGRO_VOICE*)`
 - [x] Implement `al_detach_voice(ALLEGRO_VOICE*)`
 - [x] Implement `al_voice_get_frequency(ALLEGRO_VOICE*)`

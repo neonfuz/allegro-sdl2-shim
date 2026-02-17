@@ -3178,6 +3178,50 @@ bool al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO
     return true;
 }
 
+bool al_attach_sample_to_voice(ALLEGRO_SAMPLE* sample, ALLEGRO_VOICE* voice)
+{
+    if (!sample || !voice) {
+        return false;
+    }
+    
+    Mix_Chunk* chunk = static_cast<Mix_Chunk*>(sample->data);
+    if (!chunk) {
+        return false;
+    }
+    
+    if (voice->source_type != ALLEGRO_VOICE::SOURCE_NONE) {
+        if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+            AllegroSampleInstance* old = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+            if (old && old->channel >= 0) {
+                Mix_HaltChannel(old->channel);
+                old->channel = -1;
+                old->is_playing = false;
+            }
+        } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+            Mix_HaltMusic();
+        }
+    }
+    
+    int channel = Mix_PlayChannel(-1, chunk, 0);
+    if (channel < 0) {
+        return false;
+    }
+    
+    static AllegroSampleInstance temp_instance;
+    temp_instance.chunk = chunk;
+    temp_instance.channel = channel;
+    temp_instance.is_playing = true;
+    temp_instance.loop = ALLEGRO_PLAYMODE_ONCE;
+    temp_instance.sample = sample;
+    
+    voice->source = &temp_instance;
+    voice->source_type = ALLEGRO_VOICE::SOURCE_SAMPLE;
+    voice->position = 0;
+    voice->is_playing = true;
+    
+    return true;
+}
+
 bool al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_VOICE* voice)
 {
     if (!stream || !voice) {

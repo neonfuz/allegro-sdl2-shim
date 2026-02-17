@@ -120,6 +120,7 @@ bool al_detach_mixer(ALLEGRO_MIXER* mixer);
 ALLEGRO_VOICE* al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf);
 void al_destroy_voice(ALLEGRO_VOICE* voice);
 bool al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_VOICE* voice);
+bool al_attach_sample_to_voice(ALLEGRO_SAMPLE* sample, ALLEGRO_VOICE* voice);
 bool al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_VOICE* voice);
 bool al_attach_mixer_to_voice(ALLEGRO_MIXER* mixer, ALLEGRO_VOICE* voice);
 void al_detach_voice(ALLEGRO_VOICE* voice);
