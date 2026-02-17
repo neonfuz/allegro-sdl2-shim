@@ -17,4 +17,5 @@
 - Implement Events (allegro_events.h, event queue, event waiting functions)
 - Implement mouse input system (allegro_mouse.h, al_install_mouse, al_get_mouse_state, etc.)
 - Implement legacy mouse functions (install_mouse, remove_mouse, al_get_mouse_event_source)
+- Create allegro_joystick.h header with type definitions, joystick state, and function declarations
 

@@ -257,7 +257,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 13: Joystick Input
 > See: [spec/input_impl.md](spec/input_impl.md) - Joystick Functions
 
-- [ ] Create `allegro5/allegro_joystick.h` header
+- [x] Create `allegro5/allegro_joystick.h` header
 - [ ] Define `ALLEGRO_JOYSTICK` type
 - [ ] Define `ALLEGRO_JOYSTICK_STATE` type
 - [ ] Define `ALLEGRO_JOYFLAGS_*` constants
