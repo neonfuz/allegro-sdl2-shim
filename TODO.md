@@ -388,7 +388,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 
 ## Phase 18: Timers
 
-- [ ] Create `allegro5/allegro_timer.h` header
+- [x] Create `allegro5/allegro_timer.h` header
 - [ ] Define `ALLEGRO_TIMER` type
 - [ ] Implement `al_install_timer()` - init timer system
 - [ ] Implement `al_uninstall_timer()` - shutdown timer

@@ -3176,7 +3176,7 @@ ALLEGRO_CHANNEL_CONF al_get_voice_channels(const ALLEGRO_VOICE* voice)
     if (!voice) {
         return ALLEGRO_CHANNEL_CONF_2;
     }
-    return voice->chan_conf;
+    return static_cast<ALLEGRO_CHANNEL_CONF>(voice->chan_conf);
 }
 
 ALLEGRO_AUDIO_DEPTH al_get_voice_depth(const ALLEGRO_VOICE* voice)
@@ -3184,7 +3184,7 @@ ALLEGRO_AUDIO_DEPTH al_get_voice_depth(const ALLEGRO_VOICE* voice)
     if (!voice) {
         return ALLEGRO_AUDIO_DEPTH_INT16;
     }
-    return voice->depth;
+    return static_cast<ALLEGRO_AUDIO_DEPTH>(voice->depth);
 }
 
 bool al_get_voice_playing(const ALLEGRO_VOICE* voice)
