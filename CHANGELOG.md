@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-02-16
+- Define ALLEGRO_FS_ENTRY type and ALLEGRO_FS_MODE enum in allegro_file.h for filesystem operations
+
+## 2026-02-16
 - Marked config functions as complete in TODO: al_add_config_section, al_get_config_value, al_set_config_value, al_get_first_config_section, al_get_next_config_section, al_get_first_config_entry, al_get_next_config_entry
 
 ## 2026-02-16

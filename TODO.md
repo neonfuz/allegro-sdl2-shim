@@ -437,8 +437,8 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 > See: [spec/file_impl.md](spec/file_impl.md) - File I/O Functions
 
 - [x] Create `allegro5/allegro_file.h` header
-- [ ] Define `ALLEGRO_FS_ENTRY` type
-- [ ] Define `ALLEGRO_FS_MODE` enum
+- [x] Define `ALLEGRO_FS_ENTRY` type
+- [x] Define `ALLEGRO_FS_MODE` enum
 - [ ] Define `ALLEGRO_FILE` type (wraps FILE*)
 - [ ] Define `ALLEGRO_FILE_MODE` enum
 - [ ] Implement `al_create_fs_entry(const char* path)` - create file entry

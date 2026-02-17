@@ -11,15 +11,26 @@ extern "C" {
 struct AllegroFile;
 struct AllegroFileInterface;
 struct AllegroPath;
+struct AllegroFsEntry;
 
 typedef struct AllegroFile ALLEGRO_FILE;
 typedef struct AllegroFileInterface ALLEGRO_FILE_INTERFACE;
 typedef struct AllegroPath ALLEGRO_PATH;
+typedef struct AllegroFsEntry ALLEGRO_FS_ENTRY;
 
 enum {
     ALLEGRO_SEEK_SET = 0,
     ALLEGRO_SEEK_CUR = 1,
     ALLEGRO_SEEK_END = 2
+};
+
+enum {
+    ALLEGRO_FILEMODE_READ    = 1,
+    ALLEGRO_FILEMODE_WRITE   = 2,
+    ALLEGRO_FILEMODE_EXECUTE = 4,
+    ALLEGRO_FILEMODE_HIDDEN  = 8,
+    ALLEGRO_FILEMODE_ISFILE  = 16,
+    ALLEGRO_FILEMODE_ISDIR   = 32
 };
 
 struct AllegroFileInterface {
