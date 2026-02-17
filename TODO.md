@@ -409,7 +409,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 > See: [spec/file_impl.md](spec/file_impl.md) - Configuration Functions
 
 - [x] Create `allegro5/allegro_config.h` header
-- [ ] Define `ALLEGRO_CONFIG` type
+- [x] Define `ALLEGRO_CONFIG` type
 - [ ] Define `ALLEGRO_CONFIG_SECTION` iterator type
 - [ ] Define `ALLEGRO_CONFIG_ENTRY` iterator type
 - [ ] Implement `al_create_config()` - create empty config
