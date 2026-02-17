@@ -445,7 +445,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_destroy_fs_entry(ALLEGRO_FS_ENTRY*)` - destroy entry (see research/file_system_implementation.md)
 - [x] Implement `al_get_fs_entry_name(ALLEGRO_FS_ENTRY*)` - get filename
 - [x] Implement `al_get_fs_entry_mode(ALLEGRO_FS_ENTRY*)` - get mode
-- [ ] Implement `al_fs_entry_exists(ALLEGRO_FS_ENTRY*)` - check exists
+- [x] Implement `al_fs_entry_exists(ALLEGRO_FS_ENTRY*)` - check exists
 - [ ] Implement `al_get_fs_entry_atime(ALLEGRO_FS_ENTRY*)` - access time
 - [ ] Implement `al_get_fs_entry_mtime(ALLEGRO_FS_ENTRY*)` - modify time
 - [ ] Implement `al_get_fs_entry_size(ALLEGRO_FS_ENTRY*)` - file size
