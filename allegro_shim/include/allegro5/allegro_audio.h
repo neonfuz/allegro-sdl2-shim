@@ -131,6 +131,7 @@ ALLEGRO_AUDIO_DEPTH al_get_voice_depth(const ALLEGRO_VOICE* voice);
 bool al_get_voice_playing(const ALLEGRO_VOICE* voice);
 bool al_set_voice_position(ALLEGRO_VOICE* voice, unsigned int pos);
 bool al_set_voice_playing(ALLEGRO_VOICE* voice, bool val);
+void al_voice_stop(ALLEGRO_VOICE* voice);
 
 ALLEGRO_AUDIO_STREAM* al_create_audio_stream(size_t buffer_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf);
 void al_destroy_audio_stream(ALLEGRO_AUDIO_STREAM* stream);

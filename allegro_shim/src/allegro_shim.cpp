@@ -3356,6 +3356,28 @@ bool al_set_voice_playing(ALLEGRO_VOICE* voice, bool val)
     return true;
 }
 
+void al_voice_stop(ALLEGRO_VOICE* voice)
+{
+    if (!voice) {
+        return;
+    }
+    
+    if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+        AllegroSampleInstance* spl = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+        if (spl && spl->channel >= 0) {
+            Mix_HaltChannel(spl->channel);
+            spl->channel = -1;
+            spl->is_playing = false;
+        }
+    } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+        Mix_HaltMusic();
+    } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_MIXER) {
+        Mix_HaltMusic();
+    }
+    
+    voice->is_playing = false;
+}
+
 ALLEGRO_AUDIO_STREAM* al_create_audio_stream(size_t buffer_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
 {
     return nullptr;

@@ -379,7 +379,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_detach_voice(ALLEGRO_VOICE*)`
 - [x] Implement `al_voice_get_frequency(ALLEGRO_VOICE*)`
 - [x] Implement `al_voice_get_playing(ALLEGRO_VOICE*)`
-- [ ] Implement `al_voice_stop(ALLEGRO_VOICE*)`
+- [x] Implement `al_voice_stop(ALLEGRO_VOICE*)`
 - [x] Implement `al_voice_is_playing(ALLEGRO_VOICE*)`
 - [x] Implement `al_get_default_mixer()` - get system mixer
 - [x] Implement `al_set_default_mixer(ALLEGRO_MIXER*)` - set system mixer
