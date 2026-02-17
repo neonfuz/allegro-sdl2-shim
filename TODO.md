@@ -366,7 +366,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_mixer_attach_sample(ALLEGRO_MIXER*, ALLEGRO_SAMPLE*)`
 - [x] Implement `al_mixer_attach_audio_stream(ALLEGRO_MIXER*, ALLEGRO_AUDIO_STREAM*)`
 - [x] Implement `al_mixer_detach_sample(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_detach_audio_stream(ALLEGRO_MIXER*)`
+- [x] Implement `al_mixer_detach_audio_stream(ALLEGRO_MIXER*)`
 - [x] Implement `al_mixer_get_frequency(ALLEGRO_MIXER*)`
 - [x] Implement `al_mixer_get_channels(ALLEGRO_MIXER*)`
 - [x] Implement `al_mixer_get_depth(ALLEGRO_MIXER*)`

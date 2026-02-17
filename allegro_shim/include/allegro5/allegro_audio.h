@@ -103,6 +103,7 @@ bool al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO
 bool al_mixer_attach_sample(ALLEGRO_MIXER* mixer, ALLEGRO_SAMPLE* sample);
 bool al_mixer_detach_sample(ALLEGRO_MIXER* mixer);
 bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer);
+bool al_mixer_detach_audio_stream(ALLEGRO_MIXER* mixer);
 unsigned int al_get_mixer_frequency(const ALLEGRO_MIXER* mixer);
 ALLEGRO_CHANNEL_CONF al_get_mixer_channels(const ALLEGRO_MIXER* mixer);
 ALLEGRO_AUDIO_DEPTH al_get_mixer_depth(const ALLEGRO_MIXER* mixer);

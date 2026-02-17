@@ -111,6 +111,7 @@ struct MixerWrapper {
     ALLEGRO_CHANNEL_CONF channels;
     ALLEGRO_MIXER_QUALITY quality;
     ALLEGRO_SAMPLE_INSTANCE* attached_sample_instance;
+    ALLEGRO_AUDIO_STREAM* attached_audio_stream;
 };
 
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
@@ -2982,7 +2983,33 @@ bool al_mixer_detach_sample(ALLEGRO_MIXER* mixer)
 
 bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer)
 {
-    return false;
+    if (!mixer || !stream) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    wrapper->attached_audio_stream = stream;
+    
+    return true;
+}
+
+bool al_mixer_detach_audio_stream(ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    
+    if (!wrapper->attached_audio_stream) {
+        return false;
+    }
+    
+    al_set_audio_stream_playing(wrapper->attached_audio_stream, false);
+    al_destroy_audio_stream(wrapper->attached_audio_stream);
+    wrapper->attached_audio_stream = nullptr;
+    
+    return true;
 }
 
 unsigned int al_get_mixer_frequency(const ALLEGRO_MIXER* mixer)

@@ -27,5 +27,6 @@
 - Implement al_load_audio_stream_f for loading audio streams from ALLEGRO_FILE handles
 - Implement al_mixer_attach_sample convenience function
 - Implement al_mixer_detach_sample to detach samples from mixer
+- Implement al_mixer_detach_audio_stream and fix al_attach_audio_stream_to_mixer
 
 
