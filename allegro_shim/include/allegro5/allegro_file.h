@@ -3,6 +3,8 @@
 
 #include "allegro_base.h"
 #include <stdarg.h>
+#include <sys/types.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,6 +19,15 @@ typedef struct AllegroFile ALLEGRO_FILE;
 typedef struct AllegroFileInterface ALLEGRO_FILE_INTERFACE;
 typedef struct AllegroPath ALLEGRO_PATH;
 typedef struct AllegroFsEntry ALLEGRO_FS_ENTRY;
+
+enum ALLEGRO_FS_MODE {
+    ALLEGRO_FSMODE_READ    = 1,
+    ALLEGRO_FSMODE_WRITE   = 2,
+    ALLEGRO_FSMODE_EXECUTE = 4,
+    ALLEGRO_FSMODE_HIDDEN  = 8,
+    ALLEGRO_FSMODE_ISFILE  = 16,
+    ALLEGRO_FSMODE_ISDIR   = 32
+};
 
 enum {
     ALLEGRO_SEEK_SET = 0,
@@ -94,6 +105,22 @@ ALLEGRO_FILE* al_make_temp_file(const char *tmpl, ALLEGRO_PATH **ret_path);
 ALLEGRO_FILE* al_fopen_slice(ALLEGRO_FILE *fp, size_t initial_size, const char *mode);
 
 ALLEGRO_FILE* al_open_memfile(void *mem, size_t size, const char *mode);
+
+ALLEGRO_FS_ENTRY* al_create_fs_entry(const char *path);
+void al_destroy_fs_entry(ALLEGRO_FS_ENTRY *e);
+const char* al_get_fs_entry_name(ALLEGRO_FS_ENTRY *e);
+uint32_t al_get_fs_entry_mode(ALLEGRO_FS_ENTRY *e);
+time_t al_get_fs_entry_atime(ALLEGRO_FS_ENTRY *e);
+time_t al_get_fs_entry_mtime(ALLEGRO_FS_ENTRY *e);
+time_t al_get_fs_entry_ctime(ALLEGRO_FS_ENTRY *e);
+off_t al_get_fs_entry_size(ALLEGRO_FS_ENTRY *e);
+bool al_fs_entry_exists(ALLEGRO_FS_ENTRY *e);
+bool al_remove_fs_entry(ALLEGRO_FS_ENTRY *e);
+bool al_rename_fs_entry(ALLEGRO_FS_ENTRY *e, const char *new_path);
+bool al_open_directory(ALLEGRO_FS_ENTRY *e);
+bool al_close_directory(ALLEGRO_FS_ENTRY *e);
+ALLEGRO_FS_ENTRY* al_read_directory(ALLEGRO_FS_ENTRY *e);
+bool al_create_directory(const char *path);
 
 #ifdef __cplusplus
 }

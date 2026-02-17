@@ -4434,3 +4434,51 @@ bool al_save_config_f(ALLEGRO_FILE* fp, const ALLEGRO_CONFIG* config)
     
     return true;
 }
+
+ALLEGRO_FS_ENTRY* al_create_fs_entry(const char* path)
+{
+    if (!path) {
+        return nullptr;
+    }
+    
+    AllegroFsEntry* entry = new AllegroFsEntry;
+    if (!entry) {
+        return nullptr;
+    }
+    
+    entry->path = path;
+    entry->mode = 0;
+    entry->atime = 0;
+    entry->mtime = 0;
+    entry->ctime = 0;
+    entry->size = 0;
+    entry->exists = false;
+    entry->dir = nullptr;
+    
+    struct stat st;
+    if (stat(path, &st) == 0) {
+        entry->exists = true;
+        entry->atime = st.st_atime;
+        entry->mtime = st.st_mtime;
+        entry->ctime = st.st_ctime;
+        entry->size = st.st_size;
+        
+        if (S_ISDIR(st.st_mode)) {
+            entry->mode |= ALLEGRO_FSMODE_ISDIR;
+        }
+        if (S_ISREG(st.st_mode)) {
+            entry->mode |= ALLEGRO_FSMODE_ISFILE;
+        }
+        if (st.st_mode & S_IRUSR) {
+            entry->mode |= ALLEGRO_FSMODE_READ;
+        }
+        if (st.st_mode & S_IWUSR) {
+            entry->mode |= ALLEGRO_FSMODE_WRITE;
+        }
+        if (st.st_mode & S_IXUSR) {
+            entry->mode |= ALLEGRO_FSMODE_EXECUTE;
+        }
+    }
+    
+    return reinterpret_cast<ALLEGRO_FS_ENTRY*>(entry);
+}
