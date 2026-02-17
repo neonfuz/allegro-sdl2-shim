@@ -418,8 +418,8 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
 - [x] Implement `al_load_config_file(const char* filename)` - load from file
 - [x] Implement `al_load_config_f(ALLEGRO_FILE* fp, const char* origin)` - load from file handle
-- [ ] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
-- [ ] Implement `al_save_config_f(ALLEGRO_FILE* fp, ALLEGRO_CONFIG*)` - save to file handle
+- [x] Implement `al_save_config_file(const char* filename, ALLEGRO_CONFIG*)` - save to file
+- [x] Implement `al_save_config_f(ALLEGRO_FILE* fp, ALLEGRO_CONFIG*)` - save to file handle
 - [ ] Implement `al_add_config_section(ALLEGRO_CONFIG*, const char* section)` - add section
 - [ ] Implement `al_add_config_key(ALLEGRO_CONFIG*, const char* section, const char* key, const char* value)` - add key
 - [ ] Implement `al_get_config_value(ALLEGRO_CONFIG*, const char* section, const char* key, const char* default_value)` - get value

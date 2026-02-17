@@ -4357,3 +4357,26 @@ bool al_save_config_file(const char* filename, const ALLEGRO_CONFIG* config)
     fclose(fp);
     return true;
 }
+
+bool al_save_config_f(ALLEGRO_FILE* fp, const ALLEGRO_CONFIG* config)
+{
+    if (!fp || !fp->fp || !config) {
+        return false;
+    }
+    
+    AllegroConfig* cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(config));
+    
+    for (auto& section_pair : cfg->sections) {
+        AllegroConfigSection* section = section_pair.second;
+        
+        fprintf(fp->fp, "[%s]\n", section->name.c_str());
+        
+        for (auto& entry : section->entries) {
+            fprintf(fp->fp, "%s=%s\n", entry.first.c_str(), entry.second.c_str());
+        }
+        
+        fprintf(fp->fp, "\n");
+    }
+    
+    return true;
+}

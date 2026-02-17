@@ -32,4 +32,5 @@
 - Implement timer subsystem (Phase 18): ALLEGRO_TIMER type, al_install/uninstall_timer, al_create/destroy_timer, al_start/stop_timer, timer speed/count control, al_get_timer_event_source
 - Create allegro_config.h header (Phase 19): ALLEGRO_CONFIG, ALLEGRO_CONFIG_SECTION, ALLEGRO_CONFIG_ENTRY types and function declarations
 - Implement al_load_config_f for loading config files from ALLEGRO_FILE handles
+- Implement al_save_config_f for saving config files to ALLEGRO_FILE handles (Phase 19)
 
