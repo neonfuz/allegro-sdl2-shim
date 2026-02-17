@@ -25,5 +25,6 @@
 - Create allegro_timer.h header with ALLEGRO_TIMER type and function declarations
 - Fix pre-existing audio return type cast issues in allegro_shim.cpp
 - Implement al_load_audio_stream_f for loading audio streams from ALLEGRO_FILE handles
+- Implement al_mixer_attach_sample convenience function
 
 

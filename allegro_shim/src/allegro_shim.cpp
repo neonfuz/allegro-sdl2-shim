@@ -2939,6 +2939,20 @@ bool al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO
     return false;
 }
 
+bool al_mixer_attach_sample(ALLEGRO_MIXER* mixer, ALLEGRO_SAMPLE* sample)
+{
+    if (!mixer || !sample) {
+        return false;
+    }
+    
+    ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance(sample);
+    if (!instance) {
+        return false;
+    }
+    
+    return al_attach_sample_instance_to_mixer(instance, mixer);
+}
+
 bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer)
 {
     return false;

@@ -100,6 +100,7 @@ ALLEGRO_SAMPLE* al_get_sample(ALLEGRO_SAMPLE_INSTANCE* spl);
 ALLEGRO_MIXER* al_create_mixer(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf);
 void al_destroy_mixer(ALLEGRO_MIXER* mixer);
 bool al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_MIXER* mixer);
+bool al_mixer_attach_sample(ALLEGRO_MIXER* mixer, ALLEGRO_SAMPLE* sample);
 bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer);
 unsigned int al_get_mixer_frequency(const ALLEGRO_MIXER* mixer);
 ALLEGRO_CHANNEL_CONF al_get_mixer_channels(const ALLEGRO_MIXER* mixer);
