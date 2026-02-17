@@ -13,7 +13,9 @@
 #include <allegro5/allegro_blender.h>
 #include <allegro5/allegro_events.h>
 #include <allegro5/allegro_mouse.h>
+#include <allegro5/allegro_joystick.h>
 #include <allegro5/internal/allegro_display.h>
+#include <allegro5/internal/allegro_joystick.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -60,6 +62,9 @@ static int _mouse_w = 0;
 static int _mouse_buttons = 0;
 static unsigned int _mouse_num_buttons = 3;
 static unsigned int _mouse_num_axes = 2;
+
+static bool _joystick_installed = false;
+static std::vector<ALLEGRO_JOYSTICK*> _joysticks;
 
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
 {
@@ -2119,4 +2124,272 @@ bool al_get_mouse_cursor_position(int* x, int* y)
     }
     SDL_GetMouseState(x, y);
     return true;
+}
+
+bool al_install_joystick(void)
+{
+    if (_joystick_installed) {
+        return true;
+    }
+
+    if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) {
+        return false;
+    }
+
+    _joystick_installed = true;
+
+    int num_joysticks = SDL_NumJoysticks();
+    for (int i = 0; i < num_joysticks; i++) {
+        ALLEGRO_JOYSTICK* joy = new ALLEGRO_JOYSTICK;
+        joy->index = i;
+        joy->is_controller = false;
+        joy->controller = nullptr;
+        joy->joystick = nullptr;
+
+        if (SDL_IsGameController(i)) {
+            joy->controller = SDL_GameControllerOpen(i);
+            if (joy->controller) {
+                joy->is_controller = true;
+                const char* name = SDL_GameControllerName(joy->controller);
+                if (name) {
+                    strncpy(joy->name, name, sizeof(joy->name) - 1);
+                    joy->name[sizeof(joy->name) - 1] = '\0';
+                } else {
+                    snprintf(joy->name, sizeof(joy->name), "Controller %d", i);
+                }
+            }
+        }
+
+        if (!joy->controller) {
+            joy->joystick = SDL_JoystickOpen(i);
+            if (joy->joystick) {
+                const char* name = SDL_JoystickName(joy->joystick);
+                if (name) {
+                    strncpy(joy->name, name, sizeof(joy->name) - 1);
+                    joy->name[sizeof(joy->name) - 1] = '\0';
+                } else {
+                    snprintf(joy->name, sizeof(joy->name), "Joystick %d", i);
+                }
+            }
+        }
+
+        if (joy->controller || joy->joystick) {
+            _joysticks.push_back(joy);
+        } else {
+            delete joy;
+        }
+    }
+
+    return true;
+}
+
+void al_uninstall_joystick(void)
+{
+    for (size_t i = 0; i < _joysticks.size(); i++) {
+        ALLEGRO_JOYSTICK* joy = _joysticks[i];
+        if (joy->controller) {
+            SDL_GameControllerClose(joy->controller);
+        }
+        if (joy->joystick) {
+            SDL_JoystickClose(joy->joystick);
+        }
+        delete joy;
+    }
+    _joysticks.clear();
+    _joystick_installed = false;
+}
+
+bool al_is_joystick_installed(void)
+{
+    return _joystick_installed;
+}
+
+bool al_reconfigure_joysticks(void)
+{
+    al_uninstall_joystick();
+    return al_install_joystick();
+}
+
+int al_get_num_joysticks(void)
+{
+    return (int)_joysticks.size();
+}
+
+ALLEGRO_JOYSTICK* al_get_joystick(int joyn)
+{
+    if (joyn < 0 || joyn >= (int)_joysticks.size()) {
+        return nullptr;
+    }
+    return _joysticks[joyn];
+}
+
+void al_release_joystick(ALLEGRO_JOYSTICK* joystick)
+{
+    (void)joystick;
+}
+
+bool al_get_joystick_active(ALLEGRO_JOYSTICK* joystick)
+{
+    if (!joystick) {
+        return false;
+    }
+    return (joystick->controller && SDL_GameControllerGetAttached(joystick->controller)) ||
+           (joystick->joystick && SDL_JoystickGetAttached(joystick->joystick));
+}
+
+const char* al_get_joystick_name(ALLEGRO_JOYSTICK* joystick)
+{
+    if (!joystick) {
+        return nullptr;
+    }
+    return joystick->name;
+}
+
+int al_get_joystick_num_sticks(ALLEGRO_JOYSTICK* joystick)
+{
+    if (!joystick) {
+        return 0;
+    }
+    if (joystick->is_controller) {
+        return 3;
+    }
+    if (joystick->joystick) {
+        int axes = SDL_JoystickNumAxes(joystick->joystick);
+        return (axes + 1) / 2;
+    }
+    return 0;
+}
+
+int al_get_joystick_stick_flags(ALLEGRO_JOYSTICK* joystick, int stick)
+{
+    (void)joystick;
+    (void)stick;
+    return ALLEGRO_JOYFLAG_ANALOGUE;
+}
+
+const char* al_get_joystick_stick_name(ALLEGRO_JOYSTICK* joystick, int stick)
+{
+    (void)joystick;
+    switch (stick) {
+        case 0: return "Left Stick";
+        case 1: return "Right Stick";
+        case 2: return "D-Pad";
+        default: return "Unknown";
+    }
+}
+
+int al_get_joystick_num_axes(ALLEGRO_JOYSTICK* joystick, int stick)
+{
+    if (!joystick) {
+        return 0;
+    }
+    if (joystick->is_controller) {
+        if (stick < 2) {
+            return 2;
+        }
+        return 2;
+    }
+    if (joystick->joystick) {
+        int axes = SDL_JoystickNumAxes(joystick->joystick);
+        if (stick * 2 + 1 < axes) {
+            return 2;
+        }
+        return axes - stick * 2;
+    }
+    return 0;
+}
+
+const char* al_get_joystick_axis_name(ALLEGRO_JOYSTICK* joystick, int stick, int axis)
+{
+    (void)joystick;
+    if (stick < 2) {
+        return (axis == 0) ? "X" : "Y";
+    }
+    return (axis == 0) ? "X" : "Y";
+}
+
+int al_get_joystick_num_buttons(ALLEGRO_JOYSTICK* joystick)
+{
+    if (!joystick) {
+        return 0;
+    }
+    if (joystick->is_controller) {
+        return SDL_CONTROLLER_BUTTON_MAX;
+    }
+    if (joystick->joystick) {
+        return SDL_JoystickNumButtons(joystick->joystick);
+    }
+    return 0;
+}
+
+const char* al_get_joystick_button_name(ALLEGRO_JOYSTICK* joystick, int button)
+{
+    (void)joystick;
+    static const char* controller_buttons[] = {
+        "A", "B", "X", "Y", "BACK", "GUIDE", "START",
+        "LS", "RS", "LB", "RB", "DPAD_UP", "DPAD_DOWN",
+        "DPAD_LEFT", "DPAD_RIGHT"
+    };
+    if (button >= 0 && button < 15) {
+        return controller_buttons[button];
+    }
+    static char buf[16];
+    snprintf(buf, sizeof(buf), "Button %d", button);
+    return buf;
+}
+
+void al_get_joystick_state(ALLEGRO_JOYSTICK* joystick, ALLEGRO_JOYSTICK_STATE* ret_state)
+{
+    if (!joystick || !ret_state) {
+        return;
+    }
+
+    memset(ret_state, 0, sizeof(ALLEGRO_JOYSTICK_STATE));
+
+    if (joystick->is_controller && joystick->controller) {
+        ret_state->stick[0][0] = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f;
+        ret_state->stick[0][1] = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f;
+        ret_state->stick[1][0] = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f;
+        ret_state->stick[1][1] = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f;
+
+        int lt = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+        int rt = SDL_GameControllerGetAxis(joystick->controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+        ret_state->stick[2][0] = (lt + 32768) / 65535.0f;
+        ret_state->stick[2][1] = (rt + 32768) / 65535.0f;
+
+        for (int i = 0; i < SDL_CONTROLLER_BUTTON_MAX && i < 32; i++) {
+            ret_state->button[i] = SDL_GameControllerGetButton(joystick->controller, (SDL_GameControllerButton)i) ? 32767 : 0;
+        }
+
+        ret_state->button[SDL_CONTROLLER_BUTTON_DPAD_UP] = SDL_GameControllerGetButton(joystick->controller, SDL_CONTROLLER_BUTTON_DPAD_UP) ? 32767 : 0;
+        ret_state->button[SDL_CONTROLLER_BUTTON_DPAD_DOWN] = SDL_GameControllerGetButton(joystick->controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ? 32767 : 0;
+        ret_state->button[SDL_CONTROLLER_BUTTON_DPAD_LEFT] = SDL_GameControllerGetButton(joystick->controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ? 32767 : 0;
+        ret_state->button[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] = SDL_GameControllerGetButton(joystick->controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ? 32767 : 0;
+    } else if (joystick->joystick) {
+        int num_axes = SDL_JoystickNumAxes(joystick->joystick);
+        for (int i = 0; i < num_axes && i < ALLEGRO_JOYSTICK_MAX_AXES; i++) {
+            ret_state->stick[0][i] = SDL_JoystickGetAxis(joystick->joystick, i) / 32767.0f;
+        }
+
+        int num_buttons = SDL_JoystickNumButtons(joystick->joystick);
+        for (int i = 0; i < num_buttons && i < 32; i++) {
+            ret_state->button[i] = SDL_JoystickGetButton(joystick->joystick, i) ? 32767 : 0;
+        }
+    }
+}
+
+void* al_get_joystick_event_source(void)
+{
+    return nullptr;
+}
+
+int install_joystick(void)
+{
+    return al_install_joystick() ? 0 : -1;
+}
+
+int remove_joystick(void)
+{
+    al_uninstall_joystick();
+    return 0;
 }

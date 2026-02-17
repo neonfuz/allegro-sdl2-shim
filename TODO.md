@@ -258,22 +258,22 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 > See: [spec/input_impl.md](spec/input_impl.md) - Joystick Functions
 
 - [x] Create `allegro5/allegro_joystick.h` header
-- [ ] Define `ALLEGRO_JOYSTICK` type
-- [ ] Define `ALLEGRO_JOYSTICK_STATE` type
-- [ ] Define `ALLEGRO_JOYFLAGS_*` constants
-- [ ] Implement `install_joystick()` - init joystick
-- [ ] Implement `remove_joystick()` - shutdown joystick
-- [ ] Implement `al_install_joystick()` - A5 joystick init
-- [ ] Implement `al_uninstall_joystick()` - A5 joystick shutdown
-- [ ] Implement `al_get_joystick_event_source()` - get event source
-- [ ] Implement `al_reconfigure_joysticks()` - re-detect joysticks
-- [ ] Implement `al_get_num_joysticks()` - count joysticks
-- [ ] Implement `al_get_joystick(int number)` - get joystick
-- [ ] Implement `al_get_joystick_active(ALLEGRO_JOYSTICK*)` - check active
-- [ ] Implement `al_get_joystick_name(ALLEGRO_JOYSTICK*)` - get name
-- [ ] Implement `al_get_joystick_num_axes(ALLEGRO_JOYSTICK*)` - axis count
-- [ ] Implement `al_get_joystick_num_buttons(ALLEGRO_JOYSTICK*)` - button count
-- [ ] Implement `al_get_joystick_state(ALLEGRO_JOYSTICK*, ALLEGRO_JOYSTICK_STATE*)` - get state
+- [x] Define `ALLEGRO_JOYSTICK` type
+- [x] Define `ALLEGRO_JOYSTICK_STATE` type
+- [x] Define `ALLEGRO_JOYFLAGS_*` constants
+- [x] Implement `install_joystick()` - init joystick
+- [x] Implement `remove_joystick()` - shutdown joystick
+- [x] Implement `al_install_joystick()` - A5 joystick init
+- [x] Implement `al_uninstall_joystick()` - A5 joystick shutdown
+- [x] Implement `al_get_joystick_event_source()` - get event source
+- [x] Implement `al_reconfigure_joysticks()` - re-detect joysticks
+- [x] Implement `al_get_num_joysticks()` - count joysticks
+- [x] Implement `al_get_joystick(int number)` - get joystick
+- [x] Implement `al_get_joystick_active(ALLEGRO_JOYSTICK*)` - check active
+- [x] Implement `al_get_joystick_name(ALLEGRO_JOYSTICK*)` - get name
+- [x] Implement `al_get_joystick_num_axes(ALLEGRO_JOYSTICK*)` - axis count
+- [x] Implement `al_get_joystick_num_buttons(ALLEGRO_JOYSTICK*)` - button count
+- [x] Implement `al_get_joystick_state(ALLEGRO_JOYSTICK*, ALLEGRO_JOYSTICK_STATE*)` - get state
 
 ---
 
