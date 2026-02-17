@@ -4527,3 +4527,13 @@ bool al_fs_entry_exists(ALLEGRO_FS_ENTRY *e)
     AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
     return entry->exists;
 }
+
+time_t al_get_fs_entry_atime(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return 0;
+    }
+    
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+    return entry->atime;
+}

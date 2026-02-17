@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-02-16
+- Implement al_get_fs_entry_atime for retrieving file access time from ALLEGRO_FS_ENTRY structures (Phase 20)
+
+## 2026-02-16
 - Implement al_get_fs_entry_mode for retrieving file mode flags from ALLEGRO_FS_ENTRY structures (Phase 20)
 
 ## 2026-02-16
