@@ -280,7 +280,7 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 14: Audio System
 > See: [spec/audio_impl.md](spec/audio_impl.md) - Audio Implementation
 
-- [ ] Create `allegro5/allegro_audio.h` header
+- [x] Create `allegro5/allegro_audio.h` header
 - [ ] Define `ALLEGRO_AUDIO_DEVICE` type
 - [ ] Define `ALLEGRO_SAMPLE` type (wraps Mix_Chunk)
 - [ ] Define `ALLEGRO_SAMPLE_INSTANCE` type

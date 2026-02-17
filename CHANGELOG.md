@@ -19,4 +19,5 @@
 - Implement legacy mouse functions (install_mouse, remove_mouse, al_get_mouse_event_source)
 - Create allegro_joystick.h header with type definitions, joystick state, and function declarations
 - Implement joystick input system (allegro_joystick.h, al_install_joystick, al_get_joystick, al_get_joystick_state, etc.)
+- Create allegro_audio.h header for audio system (types, enums, function declarations)
 
