@@ -52,6 +52,15 @@ static bool _keyboard_installed = false;
 static Uint8 _key[512] = {0};
 static unsigned int _key_down_bits[(ALLEGRO_KEY_MAX + 31) / 32] = {0};
 
+static bool _mouse_installed = false;
+static int _mouse_x = 0;
+static int _mouse_y = 0;
+static int _mouse_z = 0;
+static int _mouse_w = 0;
+static int _mouse_buttons = 0;
+static unsigned int _mouse_num_buttons = 3;
+static unsigned int _mouse_num_axes = 2;
+
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
 {
     ALLEGRO_DISPLAY* display = new ALLEGRO_DISPLAY;
@@ -1895,8 +1904,8 @@ void al_wait_for_event(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event)
             } else if (sdl_event.type == SDL_WINDOWEVENT) {
                 if (sdl_event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     al_event.type = ALLEGRO_EVENT_DISPLAY_RESIZE;
-                    al_event.display.width = sdl_event.window.data1;
-                    al_event.display.height = sdl_event.window.data2;
+                    al_event.display_expose.width = sdl_event.window.data1;
+                    al_event.display_expose.height = sdl_event.window.data2;
                 } else if (sdl_event.window.event == SDL_WINDOWEVENT_CLOSE) {
                     al_event.type = ALLEGRO_EVENT_DISPLAY_CLOSE;
                 }
@@ -1967,4 +1976,131 @@ void al_unregister_event_source(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT_SOURCE
 {
     (void)queue;
     (void)source;
+}
+
+bool al_install_mouse(void)
+{
+    if (_mouse_installed) {
+        return true;
+    }
+    _mouse_installed = true;
+    _mouse_x = 0;
+    _mouse_y = 0;
+    _mouse_z = 0;
+    _mouse_w = 0;
+    _mouse_buttons = 0;
+    return true;
+}
+
+void al_uninstall_mouse(void)
+{
+    _mouse_installed = false;
+    _mouse_x = 0;
+    _mouse_y = 0;
+    _mouse_z = 0;
+    _mouse_w = 0;
+    _mouse_buttons = 0;
+}
+
+bool al_is_mouse_installed(void)
+{
+    return _mouse_installed;
+}
+
+void al_get_mouse_state(ALLEGRO_MOUSE_STATE* ret_state)
+{
+    if (!ret_state) {
+        return;
+    }
+
+    int x, y;
+    Uint32 buttons = SDL_GetMouseState(&x, &y);
+    
+    ret_state->x = x;
+    ret_state->y = y;
+    ret_state->z = _mouse_z;
+    ret_state->w = _mouse_w;
+    ret_state->pressure = 0;
+    ret_state->button = 0;
+    ret_state->buttons = 0;
+    ret_state->display = _current_display;
+
+    if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+        ret_state->buttons |= (1 << 0);
+    }
+    if (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+        ret_state->buttons |= (1 << 1);
+    }
+    if (buttons & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
+        ret_state->buttons |= (1 << 2);
+    }
+    if (buttons & SDL_BUTTON(SDL_BUTTON_X1)) {
+        ret_state->buttons |= (1 << 3);
+    }
+    if (buttons & SDL_BUTTON(SDL_BUTTON_X2)) {
+        ret_state->buttons |= (1 << 4);
+    }
+}
+
+bool al_mouse_button_down(const ALLEGRO_MOUSE_STATE* state, int button)
+{
+    if (!state || button < 1 || button > 32) {
+        return false;
+    }
+    return (state->buttons & (1 << (button - 1))) != 0;
+}
+
+int al_get_mouse_state_axis(const ALLEGRO_MOUSE_STATE* state, int axis)
+{
+    if (!state) {
+        return 0;
+    }
+
+    switch (axis) {
+        case 0: return state->x;
+        case 1: return state->y;
+        case 2: return state->z;
+        case 3: return state->w;
+        default: return 0;
+    }
+}
+
+int al_get_mouse_num_axes(void)
+{
+    return _mouse_num_axes;
+}
+
+int al_get_mouse_num_buttons(void)
+{
+    return _mouse_num_buttons;
+}
+
+bool al_set_mouse_xy(ALLEGRO_DISPLAY* display, float x, float y)
+{
+    (void)display;
+    SDL_WarpMouseInWindow(nullptr, (int)x, (int)y);
+    _mouse_x = (int)x;
+    _mouse_y = (int)y;
+    return true;
+}
+
+bool al_set_mouse_z(float z)
+{
+    _mouse_z = (int)z;
+    return true;
+}
+
+bool al_set_mouse_w(float w)
+{
+    _mouse_w = (int)w;
+    return true;
+}
+
+bool al_get_mouse_cursor_position(int* x, int* y)
+{
+    if (!x || !y) {
+        return false;
+    }
+    SDL_GetMouseState(x, y);
+    return true;
 }

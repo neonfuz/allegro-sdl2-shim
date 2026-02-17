@@ -234,25 +234,25 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 ## Phase 12: Mouse Input
 > See: [spec/input_impl.md](spec/input_impl.md) - Mouse Functions
 
-- [ ] Create `allegro5/allegro_mouse.h` header
-- [ ] Define `ALLEGRO_MOUSE` type
-- [ ] Define `ALLEGRO_MOUSE_STATE` type
-- [ ] Define `ALLEGRO_MOUSE_CURSOR` type
-- [ ] Define `ALLEGRO_MOUSE_*` button constants
+- [x] Create `allegro5/allegro_mouse.h` header
+- [x] Define `ALLEGRO_MOUSE` type
+- [x] Define `ALLEGRO_MOUSE_STATE` type
+- [x] Define `ALLEGRO_MOUSE_CURSOR` type
+- [x] Define `ALLEGRO_MOUSE_*` button constants
 - [ ] Implement `install_mouse()` - initialize mouse (legacy)
 - [ ] Implement `remove_mouse()` - shutdown mouse (legacy)
-- [ ] Implement `al_install_mouse()` - A5 mouse init
-- [ ] Implement `al_uninstall_mouse()` - A5 mouse shutdown
+- [x] Implement `al_install_mouse()` - A5 mouse init
+- [x] Implement `al_uninstall_mouse()` - A5 mouse shutdown
 - [ ] Implement `al_get_mouse_event_source()` - get event source
-- [ ] Implement `al_get_mouse_state(ALLEGRO_MOUSE_STATE*)` - get state
-- [ ] Implement `al_mouse_button_down(ALLEGRO_MOUSE_STATE*, int button)` - check button
-- [ ] Implement `al_get_mouse_state_axis(ALLEGRO_MOUSE_STATE*, int axis)` - get axis
-- [ ] Implement `al_get_mouse_num_axes()` - get axis count
-- [ ] Implement `al_get_mouse_num_buttons()` - get button count
-- [ ] Implement `al_set_mouse_xy(ALLEGRO_DISPLAY*, float x, float y)` - warp cursor
-- [ ] Implement `al_set_mouse_z(float z)` - set wheel
-- [ ] Implement `al_set_mouse_w(float w)` - set wheel
-- [ ] Implement `al_get_mouse_cursor_position(int* x, int* y)` - get cursor pos
+- [x] Implement `al_get_mouse_state(ALLEGRO_MOUSE_STATE*)` - get state
+- [x] Implement `al_mouse_button_down(ALLEGRO_MOUSE_STATE*, int button)` - check button
+- [x] Implement `al_get_mouse_state_axis(ALLEGRO_MOUSE_STATE*, int axis)` - get axis
+- [x] Implement `al_get_mouse_num_axes()` - get axis count
+- [x] Implement `al_get_mouse_num_buttons()` - get button count
+- [x] Implement `al_set_mouse_xy(ALLEGRO_DISPLAY*, float x, float y)` - warp cursor
+- [x] Implement `al_set_mouse_z(float z)` - set wheel
+- [x] Implement `al_set_mouse_w(float w)` - set wheel
+- [x] Implement `al_get_mouse_cursor_position(int* x, int* y)` - get cursor pos
 
 ---
 

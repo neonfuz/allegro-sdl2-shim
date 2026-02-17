@@ -15,3 +15,4 @@
 - Implement Transformations (allegro_transform.h, matrix operations, translate/rotate/scale)
 - Implement Blending (allegro_blender.h, al_set_blender, al_set_separate_blender)
 - Implement Events (allegro_events.h, event queue, event waiting functions)
+- Implement mouse input system (allegro_mouse.h, al_install_mouse, al_get_mouse_state, etc.)
