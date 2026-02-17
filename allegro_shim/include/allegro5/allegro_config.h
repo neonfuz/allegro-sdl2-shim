@@ -10,12 +10,15 @@ extern "C" {
 struct AllegroConfig;
 struct AllegroConfigSection;
 struct AllegroConfigEntry;
-struct ALLEGRO_FILE;
+
+#ifndef ALLEGRO_FILE_H
+struct AllegroFile;
+typedef struct AllegroFile ALLEGRO_FILE;
+#endif
 
 typedef struct AllegroConfig ALLEGRO_CONFIG;
 typedef struct AllegroConfigSection ALLEGRO_CONFIG_SECTION;
 typedef struct AllegroConfigEntry ALLEGRO_CONFIG_ENTRY;
-typedef struct ALLEGRO_FILE ALLEGRO_FILE;
 
 ALLEGRO_CONFIG* al_create_config(void);
 void al_destroy_config(ALLEGRO_CONFIG* config);

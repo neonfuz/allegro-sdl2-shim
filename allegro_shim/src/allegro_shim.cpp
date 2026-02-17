@@ -16,9 +16,13 @@
 #include <allegro5/allegro_events.h>
 #include <allegro5/allegro_mouse.h>
 #include <allegro5/allegro_joystick.h>
+#include <allegro5/allegro_file.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_timer.h>
+#include <allegro5/internal/allegro_file.h>
 #include <allegro5/internal/allegro_audio.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <allegro5/internal/allegro_config.h>
 #include <allegro5/internal/allegro_display.h>
 #include <allegro5/internal/allegro_joystick.h>
@@ -75,11 +79,6 @@ static std::vector<ALLEGRO_JOYSTICK*> _joysticks;
 static bool _audio_installed = false;
 static int _audio_reserved_channels = 0;
 static ALLEGRO_MIXER* _default_mixer = nullptr;
-
-struct ALLEGRO_FILE {
-    FILE* fp;
-    bool close_on_destroy;
-};
 
 struct AllegroSampleInstance {
     Mix_Chunk* chunk;
@@ -2593,11 +2592,11 @@ bool al_save_sample(const char* filename, ALLEGRO_SAMPLE* spl)
 
 ALLEGRO_SAMPLE* al_load_sample_f(ALLEGRO_FILE* fp, const char* ident)
 {
-    if (!fp || !fp->fp || !_audio_installed) {
+    if (!fp || !fp->file || !_audio_installed) {
         return nullptr;
     }
     
-    SDL_RWops* rw = SDL_RWFromFP(fp->fp, SDL_FALSE);
+    SDL_RWops* rw = SDL_RWFromFP(fp->file, SDL_FALSE);
     if (!rw) {
         return nullptr;
     }
@@ -3426,11 +3425,11 @@ ALLEGRO_AUDIO_STREAM* al_load_audio_stream(const char* filename, size_t buffer_c
 
 ALLEGRO_AUDIO_STREAM* al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples)
 {
-    if (!fp || !fp->fp || !_audio_installed) {
+    if (!fp || !fp->file || !_audio_installed) {
         return nullptr;
     }
     
-    SDL_RWops* rw = SDL_RWFromFP(fp->fp, SDL_FALSE);
+    SDL_RWops* rw = SDL_RWFromFP(fp->file, SDL_FALSE);
     if (!rw) {
         return nullptr;
     }
@@ -4321,7 +4320,7 @@ ALLEGRO_CONFIG* al_load_config_f(ALLEGRO_FILE* fp, const char* origin)
 {
     (void)origin;
     
-    if (!fp || !fp->fp) {
+    if (!fp || !fp->file) {
         return nullptr;
     }
     
@@ -4339,7 +4338,7 @@ ALLEGRO_CONFIG* al_load_config_f(ALLEGRO_FILE* fp, const char* origin)
     config->sections["general"] = current_section;
     
     char line[4096];
-    while (fgets(line, sizeof(line), fp->fp)) {
+    while (fgets(line, sizeof(line), fp->file)) {
         std::string s = line;
         _trim_string(s);
         
@@ -4414,7 +4413,7 @@ bool al_save_config_file(const char* filename, const ALLEGRO_CONFIG* config)
 
 bool al_save_config_f(ALLEGRO_FILE* fp, const ALLEGRO_CONFIG* config)
 {
-    if (!fp || !fp->fp || !config) {
+    if (!fp || !fp->file || !config) {
         return false;
     }
     
@@ -4423,13 +4422,13 @@ bool al_save_config_f(ALLEGRO_FILE* fp, const ALLEGRO_CONFIG* config)
     for (auto& section_pair : cfg->sections) {
         AllegroConfigSection* section = section_pair.second;
         
-        fprintf(fp->fp, "[%s]\n", section->name.c_str());
+        fprintf(fp->file, "[%s]\n", section->name.c_str());
         
         for (auto& entry : section->entries) {
-            fprintf(fp->fp, "%s=%s\n", entry.first.c_str(), entry.second.c_str());
+            fprintf(fp->file, "%s=%s\n", entry.first.c_str(), entry.second.c_str());
         }
         
-        fprintf(fp->fp, "\n");
+        fprintf(fp->file, "\n");
     }
     
     return true;
@@ -4481,4 +4480,20 @@ ALLEGRO_FS_ENTRY* al_create_fs_entry(const char* path)
     }
     
     return reinterpret_cast<ALLEGRO_FS_ENTRY*>(entry);
+}
+
+void al_destroy_fs_entry(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return;
+    }
+    
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+    
+    if (entry->dir) {
+        closedir(entry->dir);
+        entry->dir = nullptr;
+    }
+    
+    delete entry;
 }

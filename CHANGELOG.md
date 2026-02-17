@@ -45,4 +45,5 @@
 - Implement al_merge_config and al_merge_config_into for merging configuration files (Phase 19)
 - Create allegro_file.h header (Phase 20): ALLEGRO_FILE, ALLEGRO_FILE_INTERFACE types, ALLEGRO_SEEK enum, and all file I/O function declarations
 - Define ALLEGRO_FILE_MODE enum in allegro_file.h with file mode flags (READ, WRITE, EXECUTE, HIDDEN, ISFILE, ISDIR)
+- Implement al_destroy_fs_entry for proper cleanup of file system entries (closes open directories, frees memory)
 
