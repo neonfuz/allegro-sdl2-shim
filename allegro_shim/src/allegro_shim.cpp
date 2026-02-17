@@ -3112,7 +3112,38 @@ bool al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO
 
 bool al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_VOICE* voice)
 {
-    return false;
+    if (!stream || !voice) {
+        return false;
+    }
+    
+    AllegroAudioStream* audio_stream = reinterpret_cast<AllegroAudioStream*>(stream);
+    
+    if (voice->source_type != ALLEGRO_VOICE::SOURCE_NONE) {
+        if (voice->source_type == ALLEGRO_VOICE::SOURCE_SAMPLE) {
+            AllegroSampleInstance* old = reinterpret_cast<AllegroSampleInstance*>(voice->source);
+            if (old && old->channel >= 0) {
+                Mix_HaltChannel(old->channel);
+                old->channel = -1;
+                old->is_playing = false;
+            }
+        } else if (voice->source_type == ALLEGRO_VOICE::SOURCE_STREAM) {
+            Mix_HaltMusic();
+        }
+    }
+    
+    if (audio_stream->music) {
+        Mix_HaltMusic();
+        int loops = (audio_stream->loop == ALLEGRO_PLAYMODE_LOOP) ? -1 : 0;
+        Mix_PlayMusic(audio_stream->music, loops);
+        audio_stream->is_playing = true;
+    }
+    
+    voice->source = audio_stream;
+    voice->source_type = ALLEGRO_VOICE::SOURCE_STREAM;
+    voice->position = 0;
+    voice->is_playing = audio_stream->is_playing;
+    
+    return true;
 }
 
 bool al_attach_mixer_to_voice(ALLEGRO_MIXER* mixer, ALLEGRO_VOICE* voice)
