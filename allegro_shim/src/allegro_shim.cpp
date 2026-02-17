@@ -4507,3 +4507,13 @@ const char* al_get_fs_entry_name(ALLEGRO_FS_ENTRY *e)
     AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
     return entry->path.c_str();
 }
+
+uint32_t al_get_fs_entry_mode(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return 0;
+    }
+    
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+    return entry->mode;
+}
