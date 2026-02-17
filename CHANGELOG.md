@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-02-16
+- Implement al_get_fs_entry_name for retrieving the filename from ALLEGRO_FS_ENTRY structures (Phase 20)
+
+## 2026-02-16
 - Define ALLEGRO_FILE struct in internal header (allegro_shim/include/allegro5/internal/allegro_file.h) with FILE* wrapper and memory file support
 
 ## 2026-02-16

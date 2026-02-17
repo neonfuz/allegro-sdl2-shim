@@ -4497,3 +4497,13 @@ void al_destroy_fs_entry(ALLEGRO_FS_ENTRY *e)
     
     delete entry;
 }
+
+const char* al_get_fs_entry_name(ALLEGRO_FS_ENTRY *e)
+{
+    if (!e) {
+        return nullptr;
+    }
+    
+    AllegroFsEntry* entry = reinterpret_cast<AllegroFsEntry*>(e);
+    return entry->path.c_str();
+}
