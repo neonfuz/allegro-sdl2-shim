@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_mixer.h>
 #include <allegro5/allegro_display.h>
 #include <allegro5/allegro_keyboard.h>
 #include <allegro5/allegro_color.h>
@@ -14,6 +15,8 @@
 #include <allegro5/allegro_events.h>
 #include <allegro5/allegro_mouse.h>
 #include <allegro5/allegro_joystick.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/internal/allegro_audio.h>
 #include <allegro5/internal/allegro_display.h>
 #include <allegro5/internal/allegro_joystick.h>
 #include <cstdio>
@@ -65,6 +68,43 @@ static unsigned int _mouse_num_axes = 2;
 
 static bool _joystick_installed = false;
 static std::vector<ALLEGRO_JOYSTICK*> _joysticks;
+
+static bool _audio_installed = false;
+static int _audio_reserved_channels = 0;
+static ALLEGRO_MIXER* _default_mixer = nullptr;
+
+struct AllegroSampleInstance {
+    Mix_Chunk* chunk;
+    int channel;
+    bool is_playing;
+    ALLEGRO_PLAYMODE loop;
+    float gain;
+    float pan;
+    float speed;
+    unsigned int position;
+    ALLEGRO_SAMPLE* sample;
+};
+
+struct AllegroAudioStream {
+    Mix_Music* music;
+    bool is_playing;
+    ALLEGRO_PLAYMODE loop;
+    float gain;
+    float pan;
+    float speed;
+    unsigned int frequency;
+    ALLEGRO_AUDIO_DEPTH depth;
+    ALLEGRO_CHANNEL_CONF channels;
+    unsigned int buffer_samples;
+    size_t buffer_count;
+};
+
+struct MixerWrapper {
+    int frequency;
+    ALLEGRO_AUDIO_DEPTH depth;
+    ALLEGRO_CHANNEL_CONF channels;
+    ALLEGRO_MIXER_QUALITY quality;
+};
 
 ALLEGRO_DISPLAY* al_create_display(int w, int h)
 {
@@ -2392,4 +2432,1016 @@ int remove_joystick(void)
 {
     al_uninstall_joystick();
     return 0;
+}
+
+bool al_install_audio(void)
+{
+    if (_audio_installed) {
+        return true;
+    }
+    
+    if (Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG) == 0) {
+        return false;
+    }
+    
+    if (Mix_OpenAudio(44100, AUDIO_S16LSB, 2, 1024) < 0) {
+        Mix_Quit();
+        return false;
+    }
+    
+    _audio_installed = true;
+    return true;
+}
+
+void al_uninstall_audio(void)
+{
+    if (!_audio_installed) {
+        return;
+    }
+    
+    if (_default_mixer) {
+        al_destroy_mixer(_default_mixer);
+        _default_mixer = nullptr;
+    }
+    
+    Mix_CloseAudio();
+    Mix_Quit();
+    _audio_installed = false;
+}
+
+bool al_init_acodec_addon(void)
+{
+    return (Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG) != 0);
+}
+
+bool al_is_audio_installed(void)
+{
+    return _audio_installed;
+}
+
+uint32_t al_get_allegro_audio_version(void)
+{
+    return ALLEGRO_AUDIO_VERSION;
+}
+
+bool al_reserve_samples(int reserve_samples)
+{
+    if (!_audio_installed) {
+        return false;
+    }
+    
+    _audio_reserved_channels = reserve_samples;
+    return true;
+}
+
+ALLEGRO_SAMPLE* al_create_sample(void* buf, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf, bool free_buf)
+{
+    ALLEGRO_SAMPLE* sample = new ALLEGRO_SAMPLE;
+    if (!sample) {
+        return nullptr;
+    }
+    
+    sample->num_samples = samples;
+    sample->frequency = freq;
+    sample->depth = depth;
+    sample->chan_conf = chan_conf;
+    sample->data = buf;
+    sample->free_buffer = free_buf;
+    
+    return sample;
+}
+
+void al_destroy_sample(ALLEGRO_SAMPLE* spl)
+{
+    if (!spl) {
+        return;
+    }
+    
+    if (spl->free_buffer && spl->data) {
+        free(spl->data);
+    }
+    
+    delete spl;
+}
+
+unsigned int al_get_sample_frequency(const ALLEGRO_SAMPLE* spl)
+{
+    return spl ? spl->frequency : 0;
+}
+
+unsigned int al_get_sample_length(const ALLEGRO_SAMPLE* spl)
+{
+    return spl ? spl->num_samples : 0;
+}
+
+ALLEGRO_AUDIO_DEPTH al_get_sample_depth(const ALLEGRO_SAMPLE* spl)
+{
+    return spl ? static_cast<ALLEGRO_AUDIO_DEPTH>(spl->depth) : ALLEGRO_AUDIO_DEPTH_INT16;
+}
+
+ALLEGRO_CHANNEL_CONF al_get_sample_channels(const ALLEGRO_SAMPLE* spl)
+{
+    return spl ? static_cast<ALLEGRO_CHANNEL_CONF>(spl->chan_conf) : ALLEGRO_CHANNEL_CONF_2;
+}
+
+void* al_get_sample_data(const ALLEGRO_SAMPLE* spl)
+{
+    return spl ? spl->data : nullptr;
+}
+
+ALLEGRO_SAMPLE* al_load_sample(const char* filename)
+{
+    if (!filename || !_audio_installed) {
+        return nullptr;
+    }
+    
+    Mix_Chunk* chunk = Mix_LoadWAV(filename);
+    if (!chunk) {
+        return nullptr;
+    }
+    
+    ALLEGRO_SAMPLE* sample = new ALLEGRO_SAMPLE;
+    if (!sample) {
+        Mix_FreeChunk(chunk);
+        return nullptr;
+    }
+    
+    sample->num_samples = chunk->alen / 2;
+    sample->frequency = 44100;
+    sample->depth = ALLEGRO_AUDIO_DEPTH_INT16;
+    sample->chan_conf = ALLEGRO_CHANNEL_CONF_2;
+    sample->data = chunk;
+    sample->free_buffer = true;
+    
+    return sample;
+}
+
+bool al_save_sample(const char* filename, ALLEGRO_SAMPLE* spl)
+{
+    return false;
+}
+
+ALLEGRO_SAMPLE_INSTANCE* al_create_sample_instance(ALLEGRO_SAMPLE* data)
+{
+    if (!data) {
+        return nullptr;
+    }
+    
+    AllegroSampleInstance* instance = new AllegroSampleInstance;
+    if (!instance) {
+        return nullptr;
+    }
+    
+    instance->chunk = static_cast<Mix_Chunk*>(data->data);
+    instance->channel = -1;
+    instance->is_playing = false;
+    instance->loop = ALLEGRO_PLAYMODE_ONCE;
+    instance->gain = 1.0f;
+    instance->pan = 0.0f;
+    instance->speed = 1.0f;
+    instance->position = 0;
+    instance->sample = data;
+    
+    return reinterpret_cast<ALLEGRO_SAMPLE_INSTANCE*>(instance);
+}
+
+void al_destroy_sample_instance(ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    if (instance->channel >= 0) {
+        Mix_HaltChannel(instance->channel);
+    }
+    
+    delete instance;
+}
+
+bool al_play_sample_instance(ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    
+    if (instance->channel >= 0) {
+        Mix_HaltChannel(instance->channel);
+    }
+    
+    int loops = (instance->loop == ALLEGRO_PLAYMODE_LOOP) ? -1 : 0;
+    int channel = Mix_PlayChannel(-1, instance->chunk, loops);
+    
+    if (channel < 0) {
+        return false;
+    }
+    
+    instance->channel = channel;
+    instance->is_playing = true;
+    
+    Mix_Volume(channel, static_cast<int>(instance->gain * 128.0f));
+    
+    return true;
+}
+
+bool al_stop_sample_instance(ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    
+    if (instance->channel >= 0) {
+        Mix_HaltChannel(instance->channel);
+        instance->channel = -1;
+    }
+    
+    instance->is_playing = false;
+    return true;
+}
+
+bool al_get_sample_instance_playing(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    
+    if (instance->channel >= 0 && Mix_Playing(instance->channel)) {
+        return true;
+    }
+    
+    return false;
+}
+
+bool al_set_sample_instance_playing(ALLEGRO_SAMPLE_INSTANCE* spl, bool val)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    if (val) {
+        return al_play_sample_instance(spl);
+    } else {
+        return al_stop_sample_instance(spl);
+    }
+}
+
+unsigned int al_get_sample_instance_position(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return 0;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    
+    if (instance->channel >= 0 && instance->chunk) {
+        return static_cast<unsigned int>(SDL_GetTicks() * 44);
+    }
+    
+    return 0;
+}
+
+bool al_set_sample_instance_position(ALLEGRO_SAMPLE_INSTANCE* spl, unsigned int pos)
+{
+    return false;
+}
+
+unsigned int al_get_sample_instance_length(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return 0;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    
+    if (instance->chunk) {
+        return instance->chunk->alen / 2;
+    }
+    
+    return 0;
+}
+
+bool al_set_sample_instance_length(ALLEGRO_SAMPLE_INSTANCE* spl, unsigned int len)
+{
+    return false;
+}
+
+float al_get_sample_instance_speed(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return 1.0f;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    return instance->speed;
+}
+
+bool al_set_sample_instance_speed(ALLEGRO_SAMPLE_INSTANCE* spl, float val)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    instance->speed = val;
+    return true;
+}
+
+float al_get_sample_instance_gain(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return 1.0f;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    return instance->gain;
+}
+
+bool al_set_sample_instance_gain(ALLEGRO_SAMPLE_INSTANCE* spl, float val)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    instance->gain = val;
+    
+    if (instance->channel >= 0) {
+        Mix_Volume(instance->channel, static_cast<int>(val * 128.0f));
+    }
+    
+    return true;
+}
+
+float al_get_sample_instance_pan(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return 0.0f;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    return instance->pan;
+}
+
+bool al_set_sample_instance_pan(ALLEGRO_SAMPLE_INSTANCE* spl, float val)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    instance->pan = val;
+    return true;
+}
+
+ALLEGRO_PLAYMODE al_get_sample_instance_playmode(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return ALLEGRO_PLAYMODE_ONCE;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(const_cast<ALLEGRO_SAMPLE_INSTANCE*>(spl));
+    return instance->loop;
+}
+
+bool al_set_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE* spl, ALLEGRO_PLAYMODE val)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    instance->loop = val;
+    return true;
+}
+
+ALLEGRO_AUDIO_DEPTH al_get_sample_instance_depth(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    return ALLEGRO_AUDIO_DEPTH_INT16;
+}
+
+ALLEGRO_CHANNEL_CONF al_get_sample_instance_channels(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    return ALLEGRO_CHANNEL_CONF_2;
+}
+
+bool al_get_sample_instance_attached(const ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return false;
+    }
+    
+    const AllegroSampleInstance* instance = reinterpret_cast<const AllegroSampleInstance*>(spl);
+    return instance->channel >= 0;
+}
+
+bool al_detach_sample_instance(ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    return al_stop_sample_instance(spl);
+}
+
+bool al_set_sample(ALLEGRO_SAMPLE_INSTANCE* spl, ALLEGRO_SAMPLE* data)
+{
+    if (!spl || !data) {
+        return false;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    instance->chunk = static_cast<Mix_Chunk*>(data->data);
+    instance->sample = data;
+    return true;
+}
+
+ALLEGRO_SAMPLE* al_get_sample(ALLEGRO_SAMPLE_INSTANCE* spl)
+{
+    if (!spl) {
+        return nullptr;
+    }
+    
+    AllegroSampleInstance* instance = reinterpret_cast<AllegroSampleInstance*>(spl);
+    return instance->sample;
+}
+
+ALLEGRO_MIXER* al_create_mixer(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
+{
+    if (!_audio_installed) {
+        return nullptr;
+    }
+    
+    MixerWrapper* mixer = new MixerWrapper;
+    if (!mixer) {
+        return nullptr;
+    }
+    
+    mixer->frequency = freq;
+    mixer->depth = depth;
+    mixer->channels = chan_conf;
+    mixer->quality = ALLEGRO_MIXER_QUALITY_MEDIUM;
+    
+    return reinterpret_cast<ALLEGRO_MIXER*>(mixer);
+}
+
+void al_destroy_mixer(ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    delete wrapper;
+}
+
+bool al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_MIXER* mixer)
+{
+    return false;
+}
+
+bool al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_MIXER* mixer)
+{
+    return false;
+}
+
+unsigned int al_get_mixer_frequency(const ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return 0;
+    }
+    
+    const MixerWrapper* wrapper = reinterpret_cast<const MixerWrapper*>(mixer);
+    return wrapper->frequency;
+}
+
+ALLEGRO_CHANNEL_CONF al_get_mixer_channels(const ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return ALLEGRO_CHANNEL_CONF_2;
+    }
+    
+    const MixerWrapper* wrapper = reinterpret_cast<const MixerWrapper*>(mixer);
+    return wrapper->channels;
+}
+
+ALLEGRO_AUDIO_DEPTH al_get_mixer_depth(const ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return ALLEGRO_AUDIO_DEPTH_INT16;
+    }
+    
+    const MixerWrapper* wrapper = reinterpret_cast<const MixerWrapper*>(mixer);
+    return wrapper->depth;
+}
+
+ALLEGRO_MIXER_QUALITY al_get_mixer_quality(const ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return ALLEGRO_MIXER_QUALITY_MEDIUM;
+    }
+    
+    const MixerWrapper* wrapper = reinterpret_cast<const MixerWrapper*>(mixer);
+    return wrapper->quality;
+}
+
+float al_get_mixer_gain(const ALLEGRO_MIXER* mixer)
+{
+    return 1.0f;
+}
+
+bool al_get_mixer_playing(const ALLEGRO_MIXER* mixer)
+{
+    return true;
+}
+
+bool al_get_mixer_attached(const ALLEGRO_MIXER* mixer)
+{
+    return false;
+}
+
+bool al_set_mixer_frequency(ALLEGRO_MIXER* mixer, unsigned int val)
+{
+    if (!mixer) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    wrapper->frequency = val;
+    return true;
+}
+
+bool al_set_mixer_quality(ALLEGRO_MIXER* mixer, ALLEGRO_MIXER_QUALITY val)
+{
+    if (!mixer) {
+        return false;
+    }
+    
+    MixerWrapper* wrapper = reinterpret_cast<MixerWrapper*>(mixer);
+    wrapper->quality = val;
+    return true;
+}
+
+bool al_set_mixer_gain(ALLEGRO_MIXER* mixer, float gain)
+{
+    return true;
+}
+
+bool al_set_mixer_playing(ALLEGRO_MIXER* mixer, bool val)
+{
+    return true;
+}
+
+bool al_detach_mixer(ALLEGRO_MIXER* mixer)
+{
+    return false;
+}
+
+ALLEGRO_VOICE* al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
+{
+    return nullptr;
+}
+
+void al_destroy_voice(ALLEGRO_VOICE* voice)
+{
+}
+
+bool al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE* stream, ALLEGRO_VOICE* voice)
+{
+    return false;
+}
+
+bool al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_VOICE* voice)
+{
+    return false;
+}
+
+bool al_attach_mixer_to_voice(ALLEGRO_MIXER* mixer, ALLEGRO_VOICE* voice)
+{
+    return false;
+}
+
+void al_detach_voice(ALLEGRO_VOICE* voice)
+{
+}
+
+unsigned int al_get_voice_frequency(const ALLEGRO_VOICE* voice)
+{
+    return 0;
+}
+
+unsigned int al_get_voice_position(const ALLEGRO_VOICE* voice)
+{
+    return 0;
+}
+
+ALLEGRO_CHANNEL_CONF al_get_voice_channels(const ALLEGRO_VOICE* voice)
+{
+    return ALLEGRO_CHANNEL_CONF_2;
+}
+
+ALLEGRO_AUDIO_DEPTH al_get_voice_depth(const ALLEGRO_VOICE* voice)
+{
+    return ALLEGRO_AUDIO_DEPTH_INT16;
+}
+
+bool al_get_voice_playing(const ALLEGRO_VOICE* voice)
+{
+    return false;
+}
+
+bool al_set_voice_position(ALLEGRO_VOICE* voice, unsigned int pos)
+{
+    return false;
+}
+
+bool al_set_voice_playing(ALLEGRO_VOICE* voice, bool val)
+{
+    return false;
+}
+
+ALLEGRO_AUDIO_STREAM* al_create_audio_stream(size_t buffer_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
+{
+    return nullptr;
+}
+
+void al_destroy_audio_stream(ALLEGRO_AUDIO_STREAM* stream)
+{
+}
+
+void al_drain_audio_stream(ALLEGRO_AUDIO_STREAM* stream)
+{
+}
+
+ALLEGRO_AUDIO_STREAM* al_load_audio_stream(const char* filename, size_t buffer_count, unsigned int samples)
+{
+    if (!filename || !_audio_installed) {
+        return nullptr;
+    }
+    
+    Mix_Music* music = Mix_LoadMUS(filename);
+    if (!music) {
+        return nullptr;
+    }
+    
+    AllegroAudioStream* stream = new AllegroAudioStream;
+    if (!stream) {
+        Mix_FreeMusic(music);
+        return nullptr;
+    }
+    
+    stream->music = music;
+    stream->is_playing = false;
+    stream->loop = ALLEGRO_PLAYMODE_ONCE;
+    stream->gain = 1.0f;
+    stream->pan = 0.0f;
+    stream->speed = 1.0f;
+    stream->frequency = 44100;
+    stream->depth = ALLEGRO_AUDIO_DEPTH_INT16;
+    stream->channels = ALLEGRO_CHANNEL_CONF_2;
+    stream->buffer_samples = samples;
+    stream->buffer_count = buffer_count;
+    
+    return reinterpret_cast<ALLEGRO_AUDIO_STREAM*>(stream);
+}
+
+unsigned int al_get_audio_stream_frequency(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 0;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->frequency;
+}
+
+unsigned int al_get_audio_stream_length(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return 0;
+}
+
+unsigned int al_get_audio_stream_fragments(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return 0;
+}
+
+unsigned int al_get_available_audio_stream_fragments(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return 0;
+}
+
+float al_get_audio_stream_speed(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 1.0f;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->speed;
+}
+
+bool al_set_audio_stream_speed(ALLEGRO_AUDIO_STREAM* stream, float val)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    s->speed = val;
+    return true;
+}
+
+float al_get_audio_stream_gain(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 1.0f;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->gain;
+}
+
+bool al_set_audio_stream_gain(ALLEGRO_AUDIO_STREAM* stream, float val)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    s->gain = val;
+    return true;
+}
+
+float al_get_audio_stream_pan(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 0.0f;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->pan;
+}
+
+bool al_set_audio_stream_pan(ALLEGRO_AUDIO_STREAM* stream, float val)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    s->pan = val;
+    return true;
+}
+
+ALLEGRO_CHANNEL_CONF al_get_audio_stream_channels(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return ALLEGRO_CHANNEL_CONF_2;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->channels;
+}
+
+ALLEGRO_AUDIO_DEPTH al_get_audio_stream_depth(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return ALLEGRO_AUDIO_DEPTH_INT16;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->depth;
+}
+
+ALLEGRO_PLAYMODE al_get_audio_stream_playmode(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return ALLEGRO_PLAYMODE_ONCE;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->loop;
+}
+
+bool al_set_audio_stream_playmode(ALLEGRO_AUDIO_STREAM* stream, ALLEGRO_PLAYMODE val)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    s->loop = val;
+    return true;
+}
+
+bool al_get_audio_stream_playing(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    return s->is_playing;
+}
+
+bool al_set_audio_stream_playing(ALLEGRO_AUDIO_STREAM* stream, bool val)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    
+    if (val) {
+        if (s->music && !s->is_playing) {
+            int loops = (s->loop == ALLEGRO_PLAYMODE_LOOP) ? -1 : 0;
+            if (Mix_PlayMusic(s->music, loops) == 0) {
+                s->is_playing = true;
+                return true;
+            }
+        }
+        return false;
+    } else {
+        if (s->is_playing) {
+            Mix_PauseMusic();
+            s->is_playing = false;
+            return true;
+        }
+        return true;
+    }
+}
+
+bool al_get_audio_stream_attached(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return false;
+}
+
+bool al_detach_audio_stream(ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    
+    if (s->music) {
+        Mix_HaltMusic();
+        s->is_playing = false;
+    }
+    
+    return true;
+}
+
+uint64_t al_get_audio_stream_played_samples(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return 0;
+}
+
+void* al_get_audio_stream_fragment(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    return nullptr;
+}
+
+bool al_set_audio_stream_fragment(ALLEGRO_AUDIO_STREAM* stream, void* val)
+{
+    return false;
+}
+
+bool al_rewind_audio_stream(ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    
+    if (s->music) {
+        Mix_RewindMusic();
+        return true;
+    }
+    
+    return false;
+}
+
+bool al_seek_audio_stream_secs(ALLEGRO_AUDIO_STREAM* stream, double time)
+{
+    if (!stream) {
+        return false;
+    }
+    
+    AllegroAudioStream* s = reinterpret_cast<AllegroAudioStream*>(stream);
+    
+    if (s->music) {
+        Mix_RewindMusic();
+        return true;
+    }
+    
+    return false;
+}
+
+double al_get_audio_stream_position_secs(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 0.0;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    
+    if (s->music) {
+        return Mix_GetMusicPosition(s->music) / 1000.0;
+    }
+    
+    return 0.0;
+}
+
+double al_get_audio_stream_length_secs(const ALLEGRO_AUDIO_STREAM* stream)
+{
+    if (!stream) {
+        return 0.0;
+    }
+    
+    const AllegroAudioStream* s = reinterpret_cast<const AllegroAudioStream*>(stream);
+    
+    if (s->music) {
+        return Mix_MusicDuration(s->music);
+    }
+    
+    return 0.0;
+}
+
+ALLEGRO_MIXER* al_get_default_mixer(void)
+{
+    if (!_audio_installed) {
+        return nullptr;
+    }
+    
+    if (!_default_mixer) {
+        _default_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
+    }
+    
+    return _default_mixer;
+}
+
+bool al_set_default_mixer(ALLEGRO_MIXER* mixer)
+{
+    if (!mixer) {
+        return false;
+    }
+    
+    _default_mixer = mixer;
+    return true;
+}
+
+bool al_restore_default_mixer(void)
+{
+    if (_default_mixer) {
+        al_destroy_mixer(_default_mixer);
+        _default_mixer = nullptr;
+    }
+    
+    _default_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
+    return _default_mixer != nullptr;
+}
+
+bool al_play_sample(ALLEGRO_SAMPLE* data, float gain, float pan, float speed, ALLEGRO_PLAYMODE loop, ALLEGRO_SAMPLE_ID* ret_id)
+{
+    if (!data || !_audio_installed) {
+        return false;
+    }
+    
+    Mix_Chunk* chunk = static_cast<Mix_Chunk*>(data->data);
+    if (!chunk) {
+        return false;
+    }
+    
+    int loops = (loop == ALLEGRO_PLAYMODE_LOOP) ? -1 : 0;
+    int channel = Mix_PlayChannel(-1, chunk, loops);
+    
+    if (channel < 0) {
+        return false;
+    }
+    
+    Mix_Volume(channel, static_cast<int>(gain * 128.0f));
+    
+    if (ret_id) {
+        ret_id->_index = channel;
+        ret_id->_id = 0;
+    }
+    
+    return true;
+}
+
+void al_stop_sample(ALLEGRO_SAMPLE_ID* spl_id)
+{
+    if (!spl_id) {
+        return;
+    }
+    
+    Mix_HaltChannel(spl_id->_index);
+}
+
+void al_stop_samples(void)
+{
+    Mix_HaltChannel(-1);
 }

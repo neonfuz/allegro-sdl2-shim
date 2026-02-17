@@ -281,108 +281,108 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 > See: [spec/audio_impl.md](spec/audio_impl.md) - Audio Implementation
 
 - [x] Create `allegro5/allegro_audio.h` header
-- [ ] Define `ALLEGRO_AUDIO_DEVICE` type
-- [ ] Define `ALLEGRO_SAMPLE` type (wraps Mix_Chunk)
-- [ ] Define `ALLEGRO_SAMPLE_INSTANCE` type
-- [ ] Define `ALLEGRO_AUDIO_STREAM` type
-- [ ] Define `ALLEGRO_MIXER` type
-- [ ] Define `ALLEGRO_VOICE` type
-- [ ] Define audio depth: `ALLEGRO_AUDIO_DEPTH_*`
-- [ ] Define channel config: `ALLEGRO_CHANNEL_*`
-- [ ] Define playmode: `ALLEGRO_PLAYMODE_*`
-- [ ] Implement `al_install_audio()` - init audio
-- [ ] Implement `al_uninstall_audio()` - shutdown audio
-- [ ] Implement `al_init_acodec_addon()` - init audio codecs
-- [ ] Implement `al_is_audio_installed()` - check if audio installed
-- [ ] Implement `al_get_allegro_audio_version()` - get version
-- [ ] Implement `al_create_sample(unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans, bool free_buffer)`
-- [ ] Implement `al_destroy_sample(ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_play_sample(ALLEGRO_SAMPLE*, float volume, float pan, float speed, int loop, ALLEGRO_SAMPLE_ID*)`
-- [ ] Implement `al_stop_sample(ALLEGRO_SAMPLE_ID*)`
-- [ ] Implement `al_stop_samples()`
-- [ ] Implement `al_get_sample_frequency(ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_get_sample_length(ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_get_sample_data(ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_load_sample(const char* filename)` - load from file
+- [x] Define `ALLEGRO_AUDIO_DEVICE` type
+- [x] Define `ALLEGRO_SAMPLE` type (wraps Mix_Chunk)
+- [x] Define `ALLEGRO_SAMPLE_INSTANCE` type
+- [x] Define `ALLEGRO_AUDIO_STREAM` type
+- [x] Define `ALLEGRO_MIXER` type
+- [x] Define `ALLEGRO_VOICE` type
+- [x] Define audio depth: `ALLEGRO_AUDIO_DEPTH_*`
+- [x] Define channel config: `ALLEGRO_CHANNEL_*`
+- [x] Define playmode: `ALLEGRO_PLAYMODE_*`
+- [x] Implement `al_install_audio()` - init audio
+- [x] Implement `al_uninstall_audio()` - shutdown audio
+- [x] Implement `al_init_acodec_addon()` - init audio codecs
+- [x] Implement `al_is_audio_installed()` - check if audio installed
+- [x] Implement `al_get_allegro_audio_version()` - get version
+- [x] Implement `al_create_sample(unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans, bool free_buffer)`
+- [x] Implement `al_destroy_sample(ALLEGRO_SAMPLE*)`
+- [x] Implement `al_play_sample(ALLEGRO_SAMPLE*, float volume, float pan, float speed, int loop, ALLEGRO_SAMPLE_ID*)`
+- [x] Implement `al_stop_sample(ALLEGRO_SAMPLE_ID*)`
+- [x] Implement `al_stop_samples()`
+- [x] Implement `al_get_sample_frequency(ALLEGRO_SAMPLE*)`
+- [x] Implement `al_get_sample_length(ALLEGRO_SAMPLE*)`
+- [x] Implement `al_get_sample_data(ALLEGRO_SAMPLE*)`
+- [x] Implement `al_load_sample(const char* filename)` - load from file
 - [ ] Implement `al_load_sample_f(ALLEGRO_FILE* fp, const char* ident)` - load from file handle
-- [ ] Implement `al_save_sample(const char* filename, ALLEGRO_SAMPLE*)` - save to file
+- [x] Implement `al_save_sample(const char* filename, ALLEGRO_SAMPLE*)` - save to file
 
 ---
 
 ## Phase 15: Audio Sample Instances
 
-- [ ] Implement `al_create_sample_instance(ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_destroy_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_play_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_stop_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_get_sample_instance_playing(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_playing(ALLEGRO_SAMPLE_INSTANCE*, bool play)`
-- [ ] Implement `al_get_sample_instance_position(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_position(ALLEGRO_SAMPLE_INSTANCE*, unsigned int pos)`
-- [ ] Implement `al_get_sample_instance_length(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_length(ALLEGRO_SAMPLE_INSTANCE*, unsigned int len)`
-- [ ] Implement `al_get_sample_instance_speed(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_speed(ALLEGRO_SAMPLE_INSTANCE*, float speed)`
-- [ ] Implement `al_get_sample_instance_gain(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_gain(ALLEGRO_SAMPLE_INSTANCE*, float gain)`
-- [ ] Implement `al_get_sample_instance_pan(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_pan(ALLEGRO_SAMPLE_INSTANCE*, float pan)`
-- [ ] Implement `al_get_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*)`
-- [ ] Implement `al_set_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*, int mode)`
-- [ ]attach_sample_instance_to Implement `al__mixer(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_MIXER*)`
+- [x] Implement `al_create_sample_instance(ALLEGRO_SAMPLE*)`
+- [x] Implement `al_destroy_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_play_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_stop_sample_instance(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_get_sample_instance_playing(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_playing(ALLEGRO_SAMPLE_INSTANCE*, bool play)`
+- [x] Implement `al_get_sample_instance_position(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_position(ALLEGRO_SAMPLE_INSTANCE*, unsigned int pos)`
+- [x] Implement `al_get_sample_instance_length(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_length(ALLEGRO_SAMPLE_INSTANCE*, unsigned int len)`
+- [x] Implement `al_get_sample_instance_speed(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_speed(ALLEGRO_SAMPLE_INSTANCE*, float speed)`
+- [x] Implement `al_get_sample_instance_gain(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_gain(ALLEGRO_SAMPLE_INSTANCE*, float gain)`
+- [x] Implement `al_get_sample_instance_pan(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_pan(ALLEGRO_SAMPLE_INSTANCE*, float pan)`
+- [x] Implement `al_get_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*)`
+- [x] Implement `al_set_sample_instance_playmode(ALLEGRO_SAMPLE_INSTANCE*, int mode)`
+- [x] Implement `al_attach_sample_instance_to_mixer(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_MIXER*)`
 - [ ] Implement `al_attach_sample_instance_to_voice(ALLEGRO_SAMPLE_INSTANCE*, ALLEGRO_VOICE*)`
 
 ---
 
 ## Phase 16: Audio Streams
 
-- [ ] Implement `al_create_audio_stream(size_t fragment_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
-- [ ] Implement `al_destroy_audio_stream(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_get_audio_stream_frequency(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_get_audio_stream_length(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_get_audio_stream_position(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_position(ALLEGRO_AUDIO_STREAM*, unsigned int pos)`
-- [ ] Implement `al_get_audio_stream_speed(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_speed(ALLEGRO_AUDIO_STREAM*, float speed)`
-- [ ] Implement `al_get_audio_stream_gain(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_gain(ALLEGRO_AUDIO_STREAM*, float gain)`
-- [ ] Implement `al_get_audio_stream_pan(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_pan(ALLEGRO_AUDIO_STREAM*, float pan)`
-- [ ] Implement `al_get_audio_stream_playing(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_playing(ALLEGRO_AUDIO_STREAM*, bool play)`
-- [ ] Implement `al_get_audio_stream_playmode(ALLEGRO_AUDIO_STREAM*)`
-- [ ] Implement `al_set_audio_stream_playmode(ALLEGRO_AUDIO_STREAM*, int mode)`
-- [ ] Implement `al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM*, ALLEGRO_MIXER*)`
+- [x] Implement `al_create_audio_stream(size_t fragment_count, unsigned int samples, unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
+- [x] Implement `al_destroy_audio_stream(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_get_audio_stream_frequency(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_get_audio_stream_length(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_get_audio_stream_position(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_position(ALLEGRO_AUDIO_STREAM*, unsigned int pos)`
+- [x] Implement `al_get_audio_stream_speed(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_speed(ALLEGRO_AUDIO_STREAM*, float speed)`
+- [x] Implement `al_get_audio_stream_gain(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_gain(ALLEGRO_AUDIO_STREAM*, float gain)`
+- [x] Implement `al_get_audio_stream_pan(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_pan(ALLEGRO_AUDIO_STREAM*, float pan)`
+- [x] Implement `al_get_audio_stream_playing(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_playing(ALLEGRO_AUDIO_STREAM*, bool play)`
+- [x] Implement `al_get_audio_stream_playmode(ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_set_audio_stream_playmode(ALLEGRO_AUDIO_STREAM*, int mode)`
+- [x] Implement `al_attach_audio_stream_to_mixer(ALLEGRO_AUDIO_STREAM*, ALLEGRO_MIXER*)`
 - [ ] Implement `al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM*, ALLEGRO_VOICE*)`
-- [ ] Implement `al_load_audio_stream(const char* filename, size_t buffer_count, unsigned int samples)`
+- [x] Implement `al_load_audio_stream(const char* filename, size_t buffer_count, unsigned int samples)`
 - [ ] Implement `al_load_audio_stream_f(ALLEGRO_FILE* fp, const char* ident, size_t buffer_count, unsigned int samples)`
 
 ---
 
 ## Phase 17: Audio Mixer and Voice
 
-- [ ] Implement `al_create_mixer(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
-- [ ] Implement `al_destroy_mixer(ALLEGRO_MIXER*)`
+- [x] Implement `al_create_mixer(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
+- [x] Implement `al_destroy_mixer(ALLEGRO_MIXER*)`
 - [ ] Implement `al_mixer_attach_sample(ALLEGRO_MIXER*, ALLEGRO_SAMPLE*)`
-- [ ] Implement `al_mixer_attach_audio_stream(ALLEGRO_MIXER*, ALLEGRO_AUDIO_STREAM*)`
+- [x] Implement `al_mixer_attach_audio_stream(ALLEGRO_MIXER*, ALLEGRO_AUDIO_STREAM*)`
 - [ ] Implement `al_mixer_detach_sample(ALLEGRO_MIXER*)`
 - [ ] Implement `al_mixer_detach_audio_stream(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_get_frequency(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_get_channels(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_get_depth(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_get_gain(ALLEGRO_MIXER*)`
-- [ ] Implement `al_mixer_set_gain(ALLEGRO_MIXER*, float gain)`
-- [ ] Implement `al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
-- [ ] Implement `al_destroy_voice(ALLEGRO_VOICE*)`
+- [x] Implement `al_mixer_get_frequency(ALLEGRO_MIXER*)`
+- [x] Implement `al_mixer_get_channels(ALLEGRO_MIXER*)`
+- [x] Implement `al_mixer_get_depth(ALLEGRO_MIXER*)`
+- [x] Implement `al_mixer_get_gain(ALLEGRO_MIXER*)`
+- [x] Implement `al_mixer_set_gain(ALLEGRO_MIXER*, float gain)`
+- [x] Implement `al_create_voice(unsigned int freq, ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chans)`
+- [x] Implement `al_destroy_voice(ALLEGRO_VOICE*)`
 - [ ] Implement `al_attach_sample_to_voice(ALLEGRO_SAMPLE*, ALLEGRO_VOICE*)`
-- [ ] Implement `al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM*, ALLEGRO_VOICE*)`
-- [ ] Implement `al_detach_voice(ALLEGRO_VOICE*)`
-- [ ] Implement `al_voice_get_frequency(ALLEGRO_VOICE*)`
-- [ ] Implement `al_voice_get_playing(ALLEGRO_VOICE*)`
+- [x] Implement `al_attach_audio_stream_to_voice(ALLEGRO_AUDIO_STREAM*, ALLEGRO_VOICE*)`
+- [x] Implement `al_detach_voice(ALLEGRO_VOICE*)`
+- [x] Implement `al_voice_get_frequency(ALLEGRO_VOICE*)`
+- [x] Implement `al_voice_get_playing(ALLEGRO_VOICE*)`
 - [ ] Implement `al_voice_stop(ALLEGRO_VOICE*)`
-- [ ] Implement `al_voice_is_playing(ALLEGRO_VOICE*)`
-- [ ] Implement `al_get_default_mixer()` - get system mixer
-- [ ] Implement `al_set_default_mixer(ALLEGRO_MIXER*)` - set system mixer
+- [x] Implement `al_voice_is_playing(ALLEGRO_VOICE*)`
+- [x] Implement `al_get_default_mixer()` - get system mixer
+- [x] Implement `al_set_default_mixer(ALLEGRO_MIXER*)` - set system mixer
 
 ---
 

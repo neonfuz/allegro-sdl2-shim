@@ -342,6 +342,7 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: \
   /opt/homebrew/include/SDL2/SDL_version.h \
   /opt/homebrew/include/SDL2/SDL_locale.h \
   /opt/homebrew/include/SDL2/SDL_misc.h \
+  /opt/homebrew/include/SDL2/SDL_mixer.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_display.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_base.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
@@ -355,7 +356,11 @@ CMakeFiles/allegro_shim.dir/src/allegro_shim.cpp.o: \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_blender.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_events.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_mouse.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_joystick.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/allegro_audio.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_audio.h \
   /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_display.h \
+  /Users/neonfuz/code/zquest-port/allegro_shim/allegro_shim/include/allegro5/internal/allegro_joystick.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstdio \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstdlib \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cmath \
