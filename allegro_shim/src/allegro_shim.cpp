@@ -4179,6 +4179,60 @@ const char* al_get_next_config_entry(ALLEGRO_CONFIG_ENTRY** iterator)
     return nullptr;
 }
 
+ALLEGRO_CONFIG* al_merge_config(const ALLEGRO_CONFIG* cfg1, const ALLEGRO_CONFIG* cfg2)
+{
+    if (!cfg1 && !cfg2) {
+        return nullptr;
+    }
+    
+    if (!cfg1) {
+        return al_create_config();
+    }
+    
+    if (!cfg2) {
+        return al_create_config();
+    }
+    
+    ALLEGRO_CONFIG* result = al_create_config();
+    if (!result) {
+        return nullptr;
+    }
+    
+    al_merge_config_into(result, cfg1);
+    al_merge_config_into(result, cfg2);
+    
+    return result;
+}
+
+void al_merge_config_into(ALLEGRO_CONFIG* master, const ALLEGRO_CONFIG* add)
+{
+    if (!master || !add) {
+        return;
+    }
+    
+    AllegroConfig* master_cfg = reinterpret_cast<AllegroConfig*>(master);
+    AllegroConfig* add_cfg = reinterpret_cast<AllegroConfig*>(const_cast<ALLEGRO_CONFIG*>(add));
+    
+    for (auto& section_pair : add_cfg->sections) {
+        const std::string& section_name = section_pair.first;
+        AllegroConfigSection* add_section = section_pair.second;
+        
+        AllegroConfigSection* master_section = nullptr;
+        auto master_it = master_cfg->sections.find(section_name);
+        if (master_it == master_cfg->sections.end()) {
+            master_section = new AllegroConfigSection;
+            master_section->name = section_name;
+            master_cfg->sections[section_name] = master_section;
+        } else {
+            master_section = master_it->second;
+        }
+        
+        for (auto& entry_pair : add_section->entries) {
+            master_section->entries[entry_pair.first] = entry_pair.second;
+        }
+    }
+}
+
 static void _trim_string(std::string& str)
 {
     size_t start = 0;
