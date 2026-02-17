@@ -10,3 +10,8 @@
 - Implement bitmap management system (create/destroy/target bitmaps, drawing functions, clipping)
 - Implement drawing primitives (rectangles, lines, circles, ellipses, triangles, polygons)
 - Implement keyboard subsystem (al_install_keyboard, al_get_keyboard_state, al_key_down, al_keycode_to_name, al_set_keyboard_leds)
+- Implement al_color_name_to_rgb with 140+ X11 color names
+- Implement State Management (allegro_state.h, al_store_state, al_restore_state, al_init_state)
+- Implement Transformations (allegro_transform.h, matrix operations, translate/rotate/scale)
+- Implement Blending (allegro_blender.h, al_set_blender, al_set_separate_blender)
+- Implement Events (allegro_events.h, event queue, event waiting functions)

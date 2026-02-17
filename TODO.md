@@ -81,8 +81,8 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 - [x] Implement `al_unmap_rgba(ALLEGRO_COLOR, uint8_t* r, uint8_t* g, uint8_t* b, uint8_t* a)`
 - [x] Implement `al_unmap_rgb_f(ALLEGRO_COLOR, float* r, float* g, float* b)`
 - [x] Implement `al_unmap_rgba_f(ALLEGRO_COLOR, float* r, float* g, float* b, float* a)`
-- [ ] Implement `al_color_name_to_rgb(const char* name, ALLEGRO_COLOR* color)`
-- [ ] Implement `al_get_pixel(ALLEGRO_BITMAP*, float x, float y, ALLEGRO_COLOR* color)`
+- [x] Implement `al_color_name_to_rgb(const char* name, ALLEGRO_COLOR* color)`
+- [x] Implement `al_get_pixel(ALLEGRO_BITMAP*, float x, float y, ALLEGRO_COLOR* color)`
 
 ---
 
@@ -140,94 +140,94 @@ An incrementally implementable todo list for building the Allegro 5 to SDL2 shim
 
 ## Phase 7: State Management
 
-- [ ] Create `allegro5/allegro_state.h` header
-- [ ] Define `ALLEGRO_STATE` type for saving/restoring state
-- [ ] Implement `al_store_state(ALLEGRO_STATE* state)` - save current render state
-- [ ] Implement `al_restore_state(ALLEGRO_STATE* state)` - restore render state
-- [ ] Implement `al_init_state(ALLEGRO_STATE* state)` - initialize state struct
-- [ ] Implement state persistence for target bitmap
-- [ ] Implement state persistence for blending mode
-- [ ] Implement state persistence for transformation matrix
+- [x] Create `allegro5/allegro_state.h` header
+- [x] Define `ALLEGRO_STATE` type for saving/restoring state
+- [x] Implement `al_store_state(ALLEGRO_STATE* state)` - save current render state
+- [x] Implement `al_restore_state(ALLEGRO_STATE* state)` - restore render state
+- [x] Implement `al_init_state(ALLEGRO_STATE* state)` - initialize state struct
+- [x] Implement state persistence for target bitmap
+- [x] Implement state persistence for blending mode
+- [x] Implement state persistence for transformation matrix
 
 ---
 
 ## Phase 8: Transformations
 
-- [ ] Create `allegro5/allegro_transform.h` header
-- [ ] Define `ALLEGRO_TRANSFORM` type (4x4 matrix)
-- [ ] Implement `al_identity_transform(ALLEGRO_TRANSFORM*)`
-- [ ] Implement `al_copy_transform(ALLEGRO_TRANSFORM*, const ALLEGRO_TRANSFORM*)`
-- [ ] Implement `al_use_transform(ALLEGRO_TRANSFORM*)`
-- [ ] Implement `al_get_current_transform()` - get active transform
-- [ ] Implement `al_invert_transform(ALLEGRO_TRANSFORM*)`
-- [ ] Implement `al_check_inverse(ALLEGRO_TRANSFORM*)` - check if invertible
-- [ ] Implement `al_transform_coordinates(const ALLEGRO_TRANSFORM*, float* x, float* y)`
-- [ ] Implement `al_compose_transform(ALLEGRO_TRANSFORM*, const ALLEGRO_TRANSFORM*)`
-- [ ] Implement `al_translate_transform(float x, float y, float z)`
-- [ ] Implement `al_rotate_transform(float angle)`
-- [ ] Implement `al_scale_transform(float sx, float sy, float sz)`
-- [ ] Implement `al_translate_transform_f(float x, float y, float z)`
-- [ ] Implement `al_rotate_transform_f(float angle, float x, float y, float z)`
-- [ ] Implement `al_scale_transform_f(float sx, float sy, float sz)`
+- [x] Create `allegro5/allegro_transform.h` header
+- [x] Define `ALLEGRO_TRANSFORM` type (4x4 matrix)
+- [x] Implement `al_identity_transform(ALLEGRO_TRANSFORM*)`
+- [x] Implement `al_copy_transform(ALLEGRO_TRANSFORM*, const ALLEGRO_TRANSFORM*)`
+- [x] Implement `al_use_transform(ALLEGRO_TRANSFORM*)`
+- [x] Implement `al_get_current_transform()` - get active transform
+- [x] Implement `al_invert_transform(ALLEGRO_TRANSFORM*)`
+- [x] Implement `al_check_inverse(ALLEGRO_TRANSFORM*)` - check if invertible
+- [x] Implement `al_transform_coordinates(const ALLEGRO_TRANSFORM*, float* x, float* y)`
+- [x] Implement `al_compose_transform(ALLEGRO_TRANSFORM*, const ALLEGRO_TRANSFORM*)`
+- [x] Implement `al_translate_transform(float x, float y, float z)`
+- [x] Implement `al_rotate_transform(float angle)`
+- [x] Implement `al_scale_transform(float sx, float sy, float sz)`
+- [x] Implement `al_translate_transform_f(float x, float y, float z)`
+- [x] Implement `al_rotate_transform_f(float angle, float x, float y, float z)`
+- [x] Implement `al_scale_transform_f(float sx, float sy, float sz)`
 
 ---
 
 ## Phase 9: Blending
 
-- [ ] Create `allegro5/allegro_blender.h` header
-- [ ] Define blend modes: `ALLEGRO_ADD`, `ALLEGRO_SRC_MINUS_DEST`, etc.
-- [ ] Define blend operations: `ALLEGRO_ZERO`, `ALLEGRO_ONE`, etc.
-- [ ] Implement `al_set_blender(int op, int src, int dst)`
-- [ ] Implement `al_get_blender(int* op, int* src, int* dst)`
-- [ ] Implement `al_set_separate_blender(int op, int src, int dst, int alpha_op, int src_alpha, int dst_alpha)`
-- [ ] Implement `al_get_separate_blender(int* op, int* src, int* dst, int* alpha_op, int* src_alpha, int* dst_alpha)`
+- [x] Create `allegro5/allegro_blender.h` header
+- [x] Define blend modes: `ALLEGRO_ADD`, `ALLEGRO_SRC_MINUS_DEST`, etc.
+- [x] Define blend operations: `ALLEGRO_ZERO`, `ALLEGRO_ONE`, etc.
+- [x] Implement `al_set_blender(int op, int src, int dst)`
+- [x] Implement `al_get_blender(int* op, int* src, int* dst)`
+- [x] Implement `al_set_separate_blender(int op, int src, int dst, int alpha_op, int src_alpha, int dst_alpha)`
+- [x] Implement `al_get_separate_blender(int* op, int* src, int* dst, int* alpha_op, int* src_alpha, int* dst_alpha)`
 
 ---
 
 ## Phase 10: Events
 > See: [spec/core_impl.md](spec/core_impl.md) - Event Queue Functions
 
-- [ ] Create `allegro5/allegro_events.h` header
-- [ ] Define `ALLEGRO_EVENT_TYPE` enumeration
-- [ ] Define `ALLEGRO_EVENT` union (all event types)
-- [ ] Define `ALLEGRO_KEY_*` constants (KEY_UP, KEY_DOWN, etc.)
-- [ ] Define `ALLEGRO_MOUSE_*` constants
-- [ ] Define `ALLEGRO_JOYSTICK_*` constants
-- [ ] Define `ALLEGRO_EVENT_QUEUE` type
-- [ ] Implement `al_create_event_queue()` - creates event queue
-- [ ] Implement `al_destroy_event_queue(ALLEGRO_EVENT_QUEUE*)`
-- [ ] Implement `al_register_event_source(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT_SOURCE*)`
-- [ ] Implement `al_unregister_event_source(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT_SOURCE*)`
-- [ ] Implement `al_is_event_queue_empty(ALLEGRO_EVENT_QUEUE*)`
-- [ ] Implement `al_get_next_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
-- [ ] Implement `al_peek_next_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
-- [ ] Implement `al_drop_next_event(ALLEGRO_EVENT_QUEUE*)`
-- [ ] Implement `al_flush_event_queue(ALLEGRO_EVENT_QUEUE*)`
-- [ ] Implement `al_wait_for_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
-- [ ] Implement `al_wait_for_event_timed(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*, float seconds)`
-- [ ] Implement `al_wait_for_event_until(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*, ALLEGRO_TIMEOUT*)`
+- [x] Create `allegro5/allegro_events.h` header
+- [x] Define `ALLEGRO_EVENT_TYPE` enumeration
+- [x] Define `ALLEGRO_EVENT` union (all event types)
+- [x] Define `ALLEGRO_KEY_*` constants (KEY_UP, KEY_DOWN, etc.)
+- [x] Define `ALLEGRO_MOUSE_*` constants
+- [x] Define `ALLEGRO_JOYSTICK_*` constants
+- [x] Define `ALLEGRO_EVENT_QUEUE` type
+- [x] Implement `al_create_event_queue()` - creates event queue
+- [x] Implement `al_destroy_event_queue(ALLEGRO_EVENT_QUEUE*)`
+- [x] Implement `al_register_event_source(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT_SOURCE*)`
+- [x] Implement `al_unregister_event_source(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT_SOURCE*)`
+- [x] Implement `al_is_event_queue_empty(ALLEGRO_EVENT_QUEUE*)`
+- [x] Implement `al_get_next_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
+- [x] Implement `al_peek_next_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
+- [x] Implement `al_drop_next_event(ALLEGRO_EVENT_QUEUE*)`
+- [x] Implement `al_flush_event_queue(ALLEGRO_EVENT_QUEUE*)`
+- [x] Implement `al_wait_for_event(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*)`
+- [x] Implement `al_wait_for_event_timed(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*, float seconds)`
+- [x] Implement `al_wait_for_event_until(ALLEGRO_EVENT_QUEUE*, ALLEGRO_EVENT*, ALLEGRO_TIMEOUT*)`
 
 ---
 
 ## Phase 11: Keyboard Input
 > See: [spec/input_impl.md](spec/input_impl.md) - Keyboard Functions
 
-- [ ] Create `allegro5/allegro_keyboard.h` header
-- [ ] Define `ALLEGRO_KEYBOARD` type
-- [ ] Define `ALLEGRO_KEYBOARD_STATE` type
-- [ ] Define `ALLEGRO_KEY_*` key code constants (128+ keys)
-- [ ] Define `ALLEGRO_KEYMOD_*` modifier constants
-- [ ] Implement `install_keyboard()` - initialize keyboard system
-- [ ] Implement `remove_keyboard()` - shutdown keyboard
-- [ ] Implement `al_install_keyboard()` - A5 keyboard init
-- [ ] Implement `al_uninstall_keyboard()` - A5 keyboard shutdown
-- [ ] Implement `al_get_keyboard_event_source()` - get event source
-- [ ] Implement `al_get_keyboard_state(ALLEGRO_KEYBOARD_STATE*)` - get current state
-- [ ] Implement `al_key_down(ALLEGRO_KEYBOARD_STATE*, int keycode)` - check key
-- [ ] Implement `al_get_key_name(int keycode)` - get key name string
+- [x] Create `allegro5/allegro_keyboard.h` header
+- [x] Define `ALLEGRO_KEYBOARD` type
+- [x] Define `ALLEGRO_KEYBOARD_STATE` type
+- [x] Define `ALLEGRO_KEY_*` key code constants (128+ keys)
+- [x] Define `ALLEGRO_KEYMOD_*` modifier constants
+- [x] Implement `install_keyboard()` - initialize keyboard system
+- [x] Implement `remove_keyboard()` - shutdown keyboard
+- [x] Implement `al_install_keyboard()` - A5 keyboard init
+- [x] Implement `al_uninstall_keyboard()` - A5 keyboard shutdown
+- [x] Implement `al_get_keyboard_event_source()` - get event source
+- [x] Implement `al_get_keyboard_state(ALLEGRO_KEYBOARD_STATE*)` - get current state
+- [x] Implement `al_key_down(ALLEGRO_KEYBOARD_STATE*, int keycode)` - check key
+- [x] Implement `al_get_key_name(int keycode)` - get key name string
 - [x] Implement `al_set_keyboard_leds(int leds)` - set LED state
-- [ ] Implement legacy `key[]` array getter/setter functions
-- [ ] Map SDL2 `SDL_GetKeyboardState()` to `key[]` array
+- [x] Implement legacy `key[]` array getter/setter functions
+- [x] Map SDL2 `SDL_GetKeyboardState()` to `key[]` array
 
 ---
 

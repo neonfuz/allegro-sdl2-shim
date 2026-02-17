@@ -8,10 +8,17 @@
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_bitmap.h>
 #include <allegro5/allegro_draw.h>
+#include <allegro5/allegro_state.h>
+#include <allegro5/allegro_transform.h>
+#include <allegro5/allegro_blender.h>
+#include <allegro5/allegro_events.h>
+#include <allegro5/allegro_mouse.h>
 #include <allegro5/internal/allegro_display.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
+#include <vector>
 
 static ALLEGRO_DISPLAY* _current_display = nullptr;
 static int _new_display_flags = 0;
@@ -503,6 +510,172 @@ void al_unmap_rgba_f(ALLEGRO_COLOR color, float* r, float* g, float* b, float* a
     if (g) *g = color.g;
     if (b) *b = color.b;
     if (a) *a = color.a;
+}
+
+struct ColorNameEntry {
+    const char* name;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
+
+static const ColorNameEntry _color_names[] = {
+    {"black", 0, 0, 0},
+    {"white", 255, 255, 255},
+    {"red", 255, 0, 0},
+    {"green", 0, 255, 0},
+    {"blue", 0, 0, 255},
+    {"yellow", 255, 255, 0},
+    {"cyan", 0, 255, 255},
+    {"magenta", 255, 0, 255},
+    {"aqua", 0, 255, 255},
+    {"azure", 0, 127, 255},
+    {"beige", 245, 245, 220},
+    {"bisque", 255, 228, 196},
+    {"blanchedalmond", 255, 235, 205},
+    {"blueviolet", 138, 43, 226},
+    {"brown", 165, 42, 42},
+    {"burlywood", 222, 184, 135},
+    {"cadetblue", 95, 158, 160},
+    {"chartreuse", 127, 255, 0},
+    {"chocolate", 210, 105, 30},
+    {"coral", 255, 127, 80},
+    {"cornflowerblue", 100, 149, 237},
+    {"cornsilk", 255, 248, 220},
+    {"crimson", 220, 20, 60},
+    {"darkblue", 0, 0, 139},
+    {"darkcyan", 0, 139, 139},
+    {"darkgoldenrod", 184, 134, 11},
+    {"darkgray", 169, 169, 169},
+    {"darkgreen", 0, 100, 0},
+    {"darkkhaki", 189, 183, 107},
+    {"darkmagenta", 139, 0, 139},
+    {"darkolivegreen", 85, 107, 47},
+    {"darkorange", 255, 140, 0},
+    {"darkorchid", 153, 50, 204},
+    {"darkred", 139, 0, 0},
+    {"darksalmon", 233, 150, 122},
+    {"darkseagreen", 143, 188, 143},
+    {"darkslateblue", 72, 61, 139},
+    {"darkslategray", 47, 79, 79},
+    {"darkturquoise", 0, 206, 209},
+    {"darkviolet", 148, 0, 211},
+    {"deeppink", 255, 20, 147},
+    {"deepskyblue", 0, 191, 255},
+    {"dimgray", 105, 105, 105},
+    {"dodgerblue", 30, 144, 255},
+    {"firebrick", 178, 34, 34},
+    {"floralwhite", 255, 250, 240},
+    {"forestgreen", 34, 139, 34},
+    {"fuchsia", 255, 0, 255},
+    {"gainsboro", 220, 220, 220},
+    {"ghostwhite", 248, 248, 255},
+    {"gold", 255, 215, 0},
+    {"goldenrod", 218, 165, 32},
+    {"gray", 128, 128, 128},
+    {"greenyellow", 173, 255, 47},
+    {"honeydew", 240, 255, 240},
+    {"hotpink", 255, 105, 180},
+    {"indianred", 205, 92, 92},
+    {"indigo", 75, 0, 130},
+    {"ivory", 255, 255, 240},
+    {"khaki", 240, 230, 140},
+    {"lavender", 230, 230, 250},
+    {"lavenderblush", 255, 240, 245},
+    {"lawngreen", 124, 252, 0},
+    {"lemonchiffon", 255, 250, 205},
+    {"lightblue", 173, 216, 230},
+    {"lightcoral", 240, 128, 128},
+    {"lightcyan", 224, 255, 255},
+    {"lightgoldenrodyellow", 250, 250, 210},
+    {"lightgray", 211, 211, 211},
+    {"lightgreen", 144, 238, 144},
+    {"lightpink", 255, 182, 193},
+    {"lightsalmon", 255, 160, 122},
+    {"lightseagreen", 32, 178, 170},
+    {"lightskyblue", 135, 206, 250},
+    {"lightslategray", 119, 136, 153},
+    {"lightsteelblue", 176, 196, 222},
+    {"lightyellow", 255, 255, 224},
+    {"lime", 0, 255, 0},
+    {"limegreen", 50, 205, 50},
+    {"linen", 250, 240, 230},
+    {"maroon", 128, 0, 0},
+    {"mediumaquamarine", 102, 205, 170},
+    {"mediumblue", 0, 0, 205},
+    {"mediumorchid", 186, 85, 211},
+    {"mediumpurple", 147, 112, 219},
+    {"mediumseagreen", 60, 179, 113},
+    {"mediumslateblue", 123, 104, 238},
+    {"mediumspringgreen", 0, 250, 154},
+    {"mediumturquoise", 72, 209, 204},
+    {"mediumvioletred", 199, 21, 133},
+    {"midnightblue", 25, 25, 112},
+    {"mintcream", 245, 255, 250},
+    {"mistyrose", 255, 228, 225},
+    {"moccasin", 255, 228, 181},
+    {"navajowhite", 255, 222, 173},
+    {"navy", 0, 0, 128},
+    {"oldlace", 253, 245, 230},
+    {"olive", 128, 128, 0},
+    {"olivedrab", 107, 142, 35},
+    {"orange", 255, 165, 0},
+    {"orangered", 255, 69, 0},
+    {"orchid", 218, 112, 214},
+    {"palegoldenrod", 238, 232, 170},
+    {"palegreen", 152, 251, 152},
+    {"paleturquoise", 175, 238, 238},
+    {"palevioletred", 219, 112, 147},
+    {"papayawhip", 255, 239, 213},
+    {"peachpuff", 255, 218, 185},
+    {"peru", 205, 133, 63},
+    {"pink", 255, 192, 203},
+    {"plum", 221, 160, 221},
+    {"powderblue", 176, 224, 230},
+    {"purple", 128, 0, 128},
+    {"rosybrown", 188, 143, 143},
+    {"royalblue", 65, 105, 225},
+    {"saddlebrown", 139, 69, 19},
+    {"salmon", 250, 128, 114},
+    {"sandybrown", 244, 164, 96},
+    {"seagreen", 46, 139, 87},
+    {"seashell", 255, 245, 238},
+    {"sienna", 160, 82, 45},
+    {"silver", 192, 192, 192},
+    {"skyblue", 135, 206, 235},
+    {"slateblue", 106, 90, 205},
+    {"slategray", 112, 128, 144},
+    {"snow", 255, 250, 250},
+    {"springgreen", 0, 255, 127},
+    {"steelblue", 70, 130, 180},
+    {"tan", 210, 180, 140},
+    {"teal", 0, 128, 128},
+    {"thistle", 216, 191, 216},
+    {"tomato", 255, 99, 71},
+    {"turquoise", 64, 224, 208},
+    {"violet", 238, 130, 238},
+    {"wheat", 245, 222, 179},
+    {"whitesmoke", 245, 245, 245},
+    {"yellowgreen", 154, 205, 50},
+};
+
+bool al_color_name_to_rgb(const char* name, ALLEGRO_COLOR* color)
+{
+    if (!name || !color) {
+        return false;
+    }
+
+    for (const auto& entry : _color_names) {
+        if (strcasecmp(name, entry.name) == 0) {
+            color->r = entry.r / 255.0f;
+            color->g = entry.g / 255.0f;
+            color->b = entry.b / 255.0f;
+            color->a = 1.0f;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 ALLEGRO_BITMAP* al_create_bitmap(int w, int h)
@@ -1243,4 +1416,555 @@ bool al_set_keyboard_leds(int leds)
 void* al_get_keyboard_event_source(void)
 {
     return nullptr;
+}
+
+static int _blender_op = ALLEGRO_ADD;
+static int _blender_src = ALLEGRO_ALPHA;
+static int _blender_dst = ALLEGRO_INVERSE_ALPHA;
+static int _blender_alpha_op = ALLEGRO_ADD;
+static int _blender_alpha_src = ALLEGRO_ALPHA;
+static int _blender_alpha_dst = ALLEGRO_INVERSE_ALPHA;
+
+void al_init_state(ALLEGRO_STATE* state, int flags)
+{
+    if (!state) {
+        return;
+    }
+
+    memset(state, 0, sizeof(ALLEGRO_STATE));
+
+    if (flags & ALLEGRO_STATE_NEW_DISPLAY_FLAGS) {
+        state->new_display_flags = _new_display_flags;
+    }
+    if (flags & ALLEGRO_STATE_NEW_BITMAP_FLAGS) {
+        state->new_bitmap_flags = _new_bitmap_flags;
+    }
+    if (flags & ALLEGRO_STATE_NEW_BITMAP_FORMAT) {
+        state->new_bitmap_format = _new_bitmap_format;
+    }
+    if (flags & ALLEGRO_STATE_DISPLAY) {
+        state->current_display = _current_display;
+    }
+    if (flags & ALLEGRO_STATE_TARGET_BITMAP) {
+        state->target_bitmap = _target_bitmap;
+    }
+    if (flags & ALLEGRO_STATE_BLENDER) {
+        state->blender_op = _blender_op;
+        state->blender_src = _blender_src;
+        state->blender_dst = _blender_dst;
+        state->blender_alpha_op = _blender_alpha_op;
+        state->blender_alpha_src = _blender_alpha_src;
+        state->blender_alpha_dst = _blender_alpha_dst;
+    }
+    if (flags & ALLEGRO_STATE_TRANSFORM) {
+        memset(state->transform, 0, sizeof(state->transform));
+        state->transform[0] = 1.0f;
+        state->transform[5] = 1.0f;
+        state->transform[10] = 1.0f;
+        state->transform[15] = 1.0f;
+    }
+}
+
+void al_store_state(ALLEGRO_STATE* state, int flags)
+{
+    al_init_state(state, flags);
+}
+
+void al_restore_state(ALLEGRO_STATE* state)
+{
+    if (!state) {
+        return;
+    }
+
+    if (state->new_display_flags) {
+        _new_display_flags = state->new_display_flags;
+    }
+    if (state->new_bitmap_flags) {
+        _new_bitmap_flags = state->new_bitmap_flags;
+    }
+    if (state->new_bitmap_format) {
+        _new_bitmap_format = state->new_bitmap_format;
+    }
+    if (state->current_display) {
+        _current_display = state->current_display;
+    }
+    if (state->target_bitmap) {
+        al_set_target_bitmap(state->target_bitmap);
+    }
+    if (state->blender_op) {
+        _blender_op = state->blender_op;
+        _blender_src = state->blender_src;
+        _blender_dst = state->blender_dst;
+        _blender_alpha_op = state->blender_alpha_op;
+        _blender_alpha_src = state->blender_alpha_src;
+        _blender_alpha_dst = state->blender_alpha_dst;
+    }
+}
+
+static ALLEGRO_TRANSFORM _current_transform;
+static bool _transform_initialized = false;
+
+void al_identity_transform(ALLEGRO_TRANSFORM* trans)
+{
+    if (!trans) {
+        return;
+    }
+    memset(trans->m, 0, sizeof(trans->m));
+    trans->m[0] = 1.0f;
+    trans->m[5] = 1.0f;
+    trans->m[10] = 1.0f;
+    trans->m[15] = 1.0f;
+}
+
+void al_copy_transform(ALLEGRO_TRANSFORM* dest, const ALLEGRO_TRANSFORM* src)
+{
+    if (!dest || !src) {
+        return;
+    }
+    memcpy(dest->m, src->m, sizeof(dest->m));
+}
+
+void al_use_transform(ALLEGRO_TRANSFORM* trans)
+{
+    if (!trans) {
+        return;
+    }
+    al_copy_transform(&_current_transform, trans);
+    _transform_initialized = true;
+}
+
+ALLEGRO_TRANSFORM* al_get_current_transform(void)
+{
+    if (!_transform_initialized) {
+        al_identity_transform(&_current_transform);
+        _transform_initialized = true;
+    }
+    return &_current_transform;
+}
+
+void al_invert_transform(ALLEGRO_TRANSFORM* trans)
+{
+    if (!trans) {
+        return;
+    }
+
+    float m00 = trans->m[0], m01 = trans->m[1], m02 = trans->m[2], m03 = trans->m[3];
+    float m10 = trans->m[4], m11 = trans->m[5], m12 = trans->m[6], m13 = trans->m[7];
+    float m20 = trans->m[8], m21 = trans->m[9], m22 = trans->m[10], m23 = trans->m[11];
+    float m30 = trans->m[12], m31 = trans->m[13], m32 = trans->m[14], m33 = trans->m[15];
+
+    float det = m00 * (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32 - m13 * m22 * m31 - m12 * m21 * m33 - m11 * m23 * m32)
+              - m01 * (m10 * m22 * m33 + m12 * m23 * m30 + m13 * m20 * m32 - m13 * m22 * m30 - m12 * m20 * m33 - m10 * m23 * m32)
+              + m02 * (m10 * m21 * m33 + m11 * m23 * m30 + m13 * m20 * m31 - m13 * m21 * m30 - m11 * m20 * m33 - m10 * m23 * m31)
+              - m03 * (m10 * m21 * m32 + m11 * m22 * m30 + m12 * m20 * m31 - m12 * m21 * m30 - m11 * m20 * m32 - m10 * m22 * m31);
+
+    if (fabsf(det) < 1e-10) {
+        return;
+    }
+
+    float inv_det = 1.0f / det;
+
+    trans->m[0] = (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32 - m13 * m22 * m31 - m12 * m21 * m33 - m11 * m23 * m32) * inv_det;
+    trans->m[1] = (m01 * m22 * m33 + m02 * m23 * m31 + m03 * m21 * m32 - m01 * m23 * m32 - m02 * m21 * m33 - m03 * m22 * m31) * inv_det;
+    trans->m[2] = (m01 * m12 * m33 + m02 * m13 * m31 + m03 * m11 * m32 - m01 * m13 * m32 - m02 * m11 * m33 - m03 * m12 * m31) * inv_det;
+    trans->m[3] = (m01 * m13 * m22 + m02 * m11 * m23 + m03 * m12 * m21 - m01 * m12 * m23 - m02 * m13 * m21 - m03 * m11 * m22) * inv_det;
+    trans->m[4] = (m10 * m23 * m32 + m12 * m20 * m33 + m13 * m22 * m30 - m10 * m22 * m33 - m12 * m23 * m30 - m13 * m20 * m32) * inv_det;
+    trans->m[5] = (m00 * m22 * m33 + m02 * m23 * m30 + m03 * m20 * m32 - m00 * m23 * m32 - m02 * m20 * m33 - m03 * m22 * m30) * inv_det;
+    trans->m[6] = (m00 * m13 * m32 + m02 * m10 * m33 + m03 * m12 * m30 - m00 * m12 * m33 - m02 * m13 * m30 - m03 * m10 * m32) * inv_det;
+    trans->m[7] = (m00 * m12 * m23 + m02 * m13 * m20 + m03 * m10 * m22 - m00 * m13 * m22 - m02 * m10 * m23 - m03 * m12 * m20) * inv_det;
+    trans->m[8] = (m10 * m21 * m33 + m11 * m23 * m30 + m13 * m20 * m31 - m10 * m23 * m31 - m11 * m20 * m33 - m13 * m21 * m30) * inv_det;
+    trans->m[9] = (m00 * m23 * m31 + m01 * m20 * m33 + m03 * m21 * m30 - m00 * m21 * m33 - m01 * m23 * m30 - m03 * m20 * m31) * inv_det;
+    trans->m[10] = (m00 * m11 * m33 + m01 * m13 * m30 + m03 * m10 * m31 - m00 * m13 * m31 - m01 * m10 * m33 - m03 * m11 * m30) * inv_det;
+    trans->m[11] = (m00 * m13 * m21 + m01 * m10 * m23 + m03 * m11 * m20 - m00 * m11 * m23 - m01 * m13 * m20 - m03 * m10 * m21) * inv_det;
+    trans->m[12] = (m10 * m22 * m31 + m11 * m20 * m32 + m12 * m21 * m30 - m10 * m21 * m32 - m11 * m22 * m30 - m12 * m20 * m31) * inv_det;
+    trans->m[13] = (m00 * m21 * m32 + m01 * m22 * m30 + m02 * m20 * m31 - m00 * m22 * m31 - m01 * m20 * m32 - m02 * m21 * m30) * inv_det;
+    trans->m[14] = (m00 * m12 * m31 + m01 * m10 * m32 + m02 * m11 * m30 - m00 * m11 * m32 - m01 * m12 * m30 - m02 * m10 * m31) * inv_det;
+    trans->m[15] = (m00 * m11 * m22 + m01 * m12 * m20 + m02 * m10 * m21 - m00 * m12 * m21 - m01 * m10 * m22 - m02 * m11 * m20) * inv_det;
+}
+
+int al_check_inverse(const ALLEGRO_TRANSFORM* trans)
+{
+    if (!trans) {
+        return 0;
+    }
+
+    float det = trans->m[0] * (trans->m[5] * trans->m[10] * trans->m[15] + trans->m[6] * trans->m[11] * trans->m[13] + trans->m[7] * trans->m[9] * trans->m[14]
+                           - trans->m[7] * trans->m[10] * trans->m[13] - trans->m[6] * trans->m[9] * trans->m[15] - trans->m[5] * trans->m[11] * trans->m[14])
+              - trans->m[1] * (trans->m[4] * trans->m[10] * trans->m[15] + trans->m[6] * trans->m[11] * trans->m[12] + trans->m[7] * trans->m[9] * trans->m[14]
+                           - trans->m[7] * trans->m[10] * trans->m[12] - trans->m[6] * trans->m[9] * trans->m[15] - trans->m[4] * trans->m[11] * trans->m[14])
+              + trans->m[2] * (trans->m[4] * trans->m[9] * trans->m[15] + trans->m[5] * trans->m[11] * trans->m[12] + trans->m[7] * trans->m[8] * trans->m[13]
+                           - trans->m[7] * trans->m[9] * trans->m[12] - trans->m[5] * trans->m[8] * trans->m[15] - trans->m[4] * trans->m[11] * trans->m[13])
+              - trans->m[3] * (trans->m[4] * trans->m[9] * trans->m[14] + trans->m[5] * trans->m[10] * trans->m[12] + trans->m[6] * trans->m[8] * trans->m[13]
+                           - trans->m[6] * trans->m[9] * trans->m[12] - trans->m[5] * trans->m[8] * trans->m[14] - trans->m[4] * trans->m[10] * trans->m[13]);
+
+    if (fabsf(det) < 1e-10) {
+        return 0;
+    }
+
+    return 1;
+}
+
+void al_transform_coordinates(const ALLEGRO_TRANSFORM* trans, float* x, float* y)
+{
+    if (!trans || !x || !y) {
+        return;
+    }
+
+    float x_val = *x;
+    float y_val = *y;
+    float w = trans->m[3] * x_val + trans->m[7] * y_val + trans->m[15];
+
+    if (fabsf(w) < 1e-10) {
+        w = 1.0f;
+    }
+
+    *x = (trans->m[0] * x_val + trans->m[4] * y_val + trans->m[12]) / w;
+    *y = (trans->m[1] * x_val + trans->m[5] * y_val + trans->m[13]) / w;
+}
+
+void al_compose_transform(ALLEGRO_TRANSFORM* dest, const ALLEGRO_TRANSFORM* src)
+{
+    if (!dest || !src) {
+        return;
+    }
+
+    ALLEGRO_TRANSFORM result;
+    const float* a = dest->m;
+    const float* b = src->m;
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            result.m[i * 4 + j] = a[i * 4 + 0] * b[0 * 4 + j] +
+                                   a[i * 4 + 1] * b[1 * 4 + j] +
+                                   a[i * 4 + 2] * b[2 * 4 + j] +
+                                   a[i * 4 + 3] * b[3 * 4 + j];
+        }
+    }
+
+    memcpy(dest->m, result.m, sizeof(dest->m));
+}
+
+void al_translate_transform(ALLEGRO_TRANSFORM* trans, float x, float y, float z)
+{
+    if (!trans) {
+        return;
+    }
+
+    ALLEGRO_TRANSFORM t;
+    al_identity_transform(&t);
+    t.m[12] = x;
+    t.m[13] = y;
+    t.m[14] = z;
+
+    al_compose_transform(trans, &t);
+}
+
+void al_rotate_transform(ALLEGRO_TRANSFORM* trans, float angle)
+{
+    if (!trans) {
+        return;
+    }
+
+    float c = cosf(angle);
+    float s = sinf(angle);
+
+    ALLEGRO_TRANSFORM r;
+    al_identity_transform(&r);
+    r.m[0] = c;
+    r.m[1] = s;
+    r.m[4] = -s;
+    r.m[5] = c;
+
+    al_compose_transform(trans, &r);
+}
+
+void al_scale_transform(ALLEGRO_TRANSFORM* trans, float sx, float sy, float sz)
+{
+    if (!trans) {
+        return;
+    }
+
+    ALLEGRO_TRANSFORM s;
+    al_identity_transform(&s);
+    s.m[0] = sx;
+    s.m[5] = sy;
+    s.m[10] = sz;
+
+    al_compose_transform(trans, &s);
+}
+
+void al_translate_transform_f(ALLEGRO_TRANSFORM* trans, float x, float y, float z)
+{
+    al_translate_transform(trans, x, y, z);
+}
+
+void al_rotate_transform_f(ALLEGRO_TRANSFORM* trans, float angle, float x, float y, float z)
+{
+    if (!trans) {
+        return;
+    }
+
+    if (x == 0 && y == 0 && z == 0) {
+        return;
+    }
+
+    float len = sqrtf(x * x + y * y + z * z);
+    x /= len;
+    y /= len;
+    z /= len;
+
+    float c = cosf(angle);
+    float s = sinf(angle);
+    float t = 1.0f - c;
+
+    ALLEGRO_TRANSFORM r;
+    al_identity_transform(&r);
+    r.m[0] = t * x * x + c;
+    r.m[1] = t * x * y + s * z;
+    r.m[2] = t * x * z - s * y;
+    r.m[4] = t * x * y - s * z;
+    r.m[5] = t * y * y + c;
+    r.m[6] = t * y * z + s * x;
+    r.m[8] = t * x * z + s * y;
+    r.m[9] = t * y * z - s * x;
+    r.m[10] = t * z * z + c;
+
+    al_compose_transform(trans, &r);
+}
+
+void al_scale_transform_f(ALLEGRO_TRANSFORM* trans, float sx, float sy, float sz)
+{
+    al_scale_transform(trans, sx, sy, sz);
+}
+
+void al_set_blender(int op, int src, int dst)
+{
+    _blender_op = op;
+    _blender_src = src;
+    _blender_dst = dst;
+    _blender_alpha_op = op;
+    _blender_alpha_src = src;
+    _blender_alpha_dst = dst;
+}
+
+void al_get_blender(int* op, int* src, int* dst)
+{
+    if (op) *op = _blender_op;
+    if (src) *src = _blender_src;
+    if (dst) *dst = _blender_dst;
+}
+
+void al_set_separate_blender(int op, int src, int dst, int alpha_op, int src_alpha, int dst_alpha)
+{
+    _blender_op = op;
+    _blender_src = src;
+    _blender_dst = dst;
+    _blender_alpha_op = alpha_op;
+    _blender_alpha_src = src_alpha;
+    _blender_alpha_dst = dst_alpha;
+}
+
+void al_get_separate_blender(int* op, int* src, int* dst, int* alpha_op, int* src_alpha, int* dst_alpha)
+{
+    if (op) *op = _blender_op;
+    if (src) *src = _blender_src;
+    if (dst) *dst = _blender_dst;
+    if (alpha_op) *alpha_op = _blender_alpha_op;
+    if (src_alpha) *src_alpha = _blender_alpha_src;
+    if (dst_alpha) *dst_alpha = _blender_alpha_dst;
+}
+
+struct ALLEGRO_EVENT_QUEUE {
+    std::vector<ALLEGRO_EVENT> events;
+    size_t read_index;
+};
+
+ALLEGRO_EVENT_QUEUE* al_create_event_queue(void)
+{
+    ALLEGRO_EVENT_QUEUE* queue = new ALLEGRO_EVENT_QUEUE;
+    if (!queue) {
+        return nullptr;
+    }
+    queue->read_index = 0;
+    return queue;
+}
+
+void al_destroy_event_queue(ALLEGRO_EVENT_QUEUE* queue)
+{
+    if (!queue) {
+        return;
+    }
+    delete queue;
+}
+
+bool al_is_event_queue_empty(ALLEGRO_EVENT_QUEUE* queue)
+{
+    if (!queue) {
+        return true;
+    }
+    return queue->events.empty() || queue->read_index >= queue->events.size();
+}
+
+bool al_get_next_event(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event)
+{
+    if (!queue || !event) {
+        return false;
+    }
+    if (queue->events.empty() || queue->read_index >= queue->events.size()) {
+        return false;
+    }
+    *event = queue->events[queue->read_index];
+    queue->read_index++;
+    if (queue->read_index >= queue->events.size() / 2 && !queue->events.empty()) {
+        size_t remaining = queue->events.size() - queue->read_index;
+        std::vector<ALLEGRO_EVENT> new_events(queue->events.begin() + queue->read_index, queue->events.end());
+        queue->events = new_events;
+        queue->read_index = 0;
+    }
+    return true;
+}
+
+bool al_peek_event(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event)
+{
+    if (!queue || !event) {
+        return false;
+    }
+    if (queue->events.empty() || queue->read_index >= queue->events.size()) {
+        return false;
+    }
+    *event = queue->events[queue->read_index];
+    return true;
+}
+
+void al_drop_next_event(ALLEGRO_EVENT_QUEUE* queue)
+{
+    if (!queue) {
+        return;
+    }
+    if (!queue->events.empty() && queue->read_index < queue->events.size()) {
+        queue->read_index++;
+    }
+}
+
+void al_flush_event_queue(ALLEGRO_EVENT_QUEUE* queue)
+{
+    if (!queue) {
+        return;
+    }
+    queue->events.clear();
+    queue->read_index = 0;
+}
+
+void al_wait_for_event(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event)
+{
+    if (!queue || !event) {
+        return;
+    }
+    while (al_is_event_queue_empty(queue)) {
+        SDL_Event sdl_event;
+        if (SDL_WaitEvent(&sdl_event)) {
+            ALLEGRO_EVENT al_event;
+            al_event.type = 0;
+            al_event.display = _current_display;
+            al_event.timestamp = SDL_GetTicks() / 1000.0;
+            
+            if (sdl_event.type == SDL_KEYDOWN) {
+                al_event.type = ALLEGRO_EVENT_KEY_DOWN;
+                al_event.keyboard.keycode = sdl_event.key.keysym.sym;
+                al_event.keyboard.modifiers = sdl_event.key.keysym.mod;
+            } else if (sdl_event.type == SDL_KEYUP) {
+                al_event.type = ALLEGRO_EVENT_KEY_UP;
+                al_event.keyboard.keycode = sdl_event.key.keysym.sym;
+                al_event.keyboard.modifiers = sdl_event.key.keysym.mod;
+            } else if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
+                al_event.type = ALLEGRO_EVENT_MOUSE_BUTTON_DOWN;
+                al_event.mouse.button = sdl_event.button.button;
+                al_event.mouse.x = sdl_event.button.x;
+                al_event.mouse.y = sdl_event.button.y;
+            } else if (sdl_event.type == SDL_MOUSEBUTTONUP) {
+                al_event.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
+                al_event.mouse.button = sdl_event.button.button;
+                al_event.mouse.x = sdl_event.button.x;
+                al_event.mouse.y = sdl_event.button.y;
+            } else if (sdl_event.type == SDL_MOUSEMOTION) {
+                al_event.type = ALLEGRO_EVENT_MOUSE_AXES;
+                al_event.mouse.x = sdl_event.motion.x;
+                al_event.mouse.y = sdl_event.motion.y;
+                al_event.mouse.dx = sdl_event.motion.xrel;
+                al_event.mouse.dy = sdl_event.motion.yrel;
+            } else if (sdl_event.type == SDL_WINDOWEVENT) {
+                if (sdl_event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    al_event.type = ALLEGRO_EVENT_DISPLAY_RESIZE;
+                    al_event.display.width = sdl_event.window.data1;
+                    al_event.display.height = sdl_event.window.data2;
+                } else if (sdl_event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                    al_event.type = ALLEGRO_EVENT_DISPLAY_CLOSE;
+                }
+            }
+            
+            if (al_event.type != 0) {
+                queue->events.push_back(al_event);
+            }
+        }
+    }
+    al_get_next_event(queue, event);
+}
+
+bool al_wait_for_event_timed(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event, float secs)
+{
+    if (!queue || !event) {
+        return false;
+    }
+    
+    if (!al_is_event_queue_empty(queue)) {
+        return al_get_next_event(queue, event);
+    }
+    
+    SDL_Event sdl_event;
+    int timeout_ms = static_cast<int>(secs * 1000);
+    if (SDL_WaitEventTimeout(&sdl_event, timeout_ms)) {
+        event->type = 0;
+        event->display = _current_display;
+        event->timestamp = SDL_GetTicks() / 1000.0;
+        
+        if (sdl_event.type == SDL_KEYDOWN) {
+            event->type = ALLEGRO_EVENT_KEY_DOWN;
+            event->keyboard.keycode = sdl_event.key.keysym.sym;
+        } else if (sdl_event.type == SDL_KEYUP) {
+            event->type = ALLEGRO_EVENT_KEY_UP;
+            event->keyboard.keycode = sdl_event.key.keysym.sym;
+        }
+        
+        return event->type != 0;
+    }
+    
+    return false;
+}
+
+bool al_wait_for_event_until(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT* event, void* timeout)
+{
+    (void)timeout;
+    return al_wait_for_event_timed(queue, event, 1.0f);
+}
+
+void al_init_event_source(ALLEGRO_EVENT_SOURCE* source)
+{
+    (void)source;
+}
+
+void al_destroy_event_source(ALLEGRO_EVENT_SOURCE* source)
+{
+    (void)source;
+}
+
+void al_register_event_source(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT_SOURCE* source)
+{
+    (void)queue;
+    (void)source;
+}
+
+void al_unregister_event_source(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT_SOURCE* source)
+{
+    (void)queue;
+    (void)source;
 }
